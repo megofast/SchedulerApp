@@ -46,7 +46,7 @@ function WeeklyAppointment(props) {
     
 
     if (props.references.current[translateTimeToPositionId(props.data.startTime)] !== undefined) {
-        position.left = props.references.current[translateTimeToPositionId(props.data.startTime)].getBoundingClientRect().left;
+        position.left = props.references.current[translateTimeToPositionId(props.data.startTime)].getBoundingClientRect().left + window.pageXOffset;
         position.top = props.references.current[translateTimeToPositionId(props.data.startTime)].getBoundingClientRect().top + getAdjustedPosition(props.data.startTime) + window.pageYOffset;
         position.width = props.references.current[translateTimeToPositionId(props.data.startTime)].getBoundingClientRect().width;
         position.height = props.references.current[translateTimeToPositionId(props.data.endTime)].getBoundingClientRect().top -

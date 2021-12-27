@@ -46,7 +46,6 @@ function WeeklyCell(props) {
         // Bring up the context menu asking to creat an appointment in this slot
         setX(event.clientX + window.pageXOffset);
         setY(event.clientY + window.pageYOffset);
-        console.log(window);
         
         handleMenuEvent();
     }
@@ -80,8 +79,6 @@ function WeeklyCell(props) {
             weeklySchedule[hour].push(hourlySchedule);
         }
     }
-
-    console.log("rerender cells");
 
     return (
         <Container className='p-0 m-0'>

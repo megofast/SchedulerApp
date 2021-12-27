@@ -56,8 +56,6 @@ function WeeklyContextMenu(props) {
         props.clearSelections();
     }
 
-    
-
     return (
         <>
         <div className='layer border shadow' style={{ backgroundColor: 'white', 
