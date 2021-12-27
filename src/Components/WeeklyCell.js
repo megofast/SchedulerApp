@@ -44,8 +44,10 @@ function WeeklyCell(props) {
         event.target.style.backgroundColor = '#ffe6e6';
         setMouseIsDown(false);
         // Bring up the context menu asking to creat an appointment in this slot
-        setX(event.clientX);
-        setY(event.clientY);
+        setX(event.clientX + window.pageXOffset);
+        setY(event.clientY + window.pageYOffset);
+        console.log(window);
+        
         handleMenuEvent();
     }
 
@@ -79,6 +81,7 @@ function WeeklyCell(props) {
         }
     }
 
+    console.log("rerender cells");
 
     return (
         <Container className='p-0 m-0'>
