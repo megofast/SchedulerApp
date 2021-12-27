@@ -1,0 +1,32 @@
+.half-time {
+    font-size: 14px;
+}
+
+.col-height {
+    height: 45px;
+}
+
+.today {
+    background-color:ghostwhite;
+}
+
+.addBorders {
+    border: 1px solid #f0f0f0;
+}
+
+.schedule-cell {
+    background-color: #ffffff;
+}
+
+.schedule-cell:hover {
+     background-color: #f0f0f0 !important;
+  }
+
+.layer {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    left: 250px;
+    top: 250px;
+    z-index: 600;
+}

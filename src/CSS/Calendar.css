@@ -1,0 +1,33 @@
+.calendar-day {
+    height: 100px;
+    *width: 14.285714285714285714285714285714%;
+    width: 14.285714285714285714285714285714%;
+    
+  }
+
+  .calendar-day:hover {
+    background-color: rgba(0,0,0,.10);
+  }
+
+  .calendar-day p {
+    right: 10px;
+    color: #a6a6a6;
+  }
+
+  .current {
+    background-color: white;
+  }
+
+  .current p {
+    color: #000000;
+  }
+  
+  .today p {
+    color: blueviolet;
+    font-weight: bold;
+  }
+
+  .selected p {
+    color: #cc0000;
+    font-weight: bold;
+  }
