@@ -5,7 +5,7 @@ import { Col, Container, Row} from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import WeeklyAppointment from './WeeklyAppointment';
 import WeeklyContextMenu from './weeklyContextMenu';
-import { addWeeklySelectedCell, resetWeeklySelectedCells } from '../Redux/AppointmentSlice';
+import { addWeeklySelectedCell, resetWeeklySelectedCells, removeLastWeeklySelectedCell } from '../Redux/AppointmentSlice';
 
 
 function WeeklyCell(props) {
@@ -17,6 +17,7 @@ function WeeklyCell(props) {
     const [createMenuIsOpen, setMenuIsOpen] = useState(false);
     const [X, setX] = useState(0);
     const [Y, setY] = useState(0);
+    const [startId, setStartId] = useState(0);
 
     const handleMenuEvent = () => {
         setMenuIsOpen(!createMenuIsOpen);
@@ -37,6 +38,7 @@ function WeeklyCell(props) {
         }
         event.target.style.backgroundColor = '#e6ffe6';
         setMouseIsDown(true);
+        setStartId(event.target.id);
         dispatch(addWeeklySelectedCell(event.target.id));
     }
 
@@ -46,14 +48,21 @@ function WeeklyCell(props) {
         // Bring up the context menu asking to creat an appointment in this slot
         setX(event.clientX + window.pageXOffset);
         setY(event.clientY + window.pageYOffset);
-        
+        dispatch(addWeeklySelectedCell(event.target.id));
         handleMenuEvent();
     }
 
     const mouseSelected = (event) => {
-        if (mouseIsDown) {
-            event.target.style.backgroundColor = '#f0f0f0';
-            dispatch(addWeeklySelectedCell(event.target.id));
+        console.log(event.target.id + " --- " + weeklySelectedCells[weeklySelectedCells.length - 1]);
+        if (mouseIsDown && (event.target.id - startId) % 7 === 0) {
+            if (event.target.id < weeklySelectedCells[weeklySelectedCells.length - 1]) {
+                // The cursor was moved back to a previous cell, remove the highlighting from the cell below
+                gridRefs.current[weeklySelectedCells[weeklySelectedCells.length - 1]].style.backgroundColor = 'white';
+                dispatch(removeLastWeeklySelectedCell());
+            } else {
+                event.target.style.backgroundColor = '#f0f0f0';
+                dispatch(addWeeklySelectedCell(event.target.id));
+            }
         }
     }
 

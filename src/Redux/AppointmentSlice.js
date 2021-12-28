@@ -49,6 +49,9 @@ const AppointmentSlice = createSlice({
         resetWeeklySelectedCells: (state) => {
             state.weeklySelectedCells = [];
         },
+        removeLastWeeklySelectedCell: (state) => {
+            state.weeklySelectedCells.pop();
+        },
         moveToNextWeek: (state) => {
             // Move to the next week on the weekly view
             let oldDay = moment(state.currentDay);
@@ -116,6 +119,7 @@ const AppointmentSlice = createSlice({
     },
 });
 
-export const { moveCalendarToNextMonth, moveCalendarToPreviousMonth, changeCurrentDay, moveToNextWeek, moveToPreviousWeek, addWeeklySelectedCell, resetWeeklySelectedCells } = AppointmentSlice.actions;
+export const { moveCalendarToNextMonth, moveCalendarToPreviousMonth, changeCurrentDay, moveToNextWeek, moveToPreviousWeek, 
+    addWeeklySelectedCell, resetWeeklySelectedCells, removeLastWeeklySelectedCell } = AppointmentSlice.actions;
 
 export default AppointmentSlice.reducer;
