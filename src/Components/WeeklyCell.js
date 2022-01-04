@@ -53,9 +53,8 @@ function WeeklyCell(props) {
     }
 
     const mouseSelected = (event) => {
-        console.log(event.target.id + " --- " + weeklySelectedCells[weeklySelectedCells.length - 1]);
         if (mouseIsDown && (event.target.id - startId) % 7 === 0) {
-            if (event.target.id < weeklySelectedCells[weeklySelectedCells.length - 1]) {
+            if (parseInt(event.target.id) < weeklySelectedCells[weeklySelectedCells.length - 1]) {
                 // The cursor was moved back to a previous cell, remove the highlighting from the cell below
                 gridRefs.current[weeklySelectedCells[weeklySelectedCells.length - 1]].style.backgroundColor = 'white';
                 dispatch(removeLastWeeklySelectedCell());

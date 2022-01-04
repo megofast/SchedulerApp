@@ -3,7 +3,7 @@ import AppointmentReducer from "./AppointmentSlice";
 
 export const store = configureStore({
     reducer: {
-        appointmentReducer: AppointmentReducer
+        appointmentReducer: AppointmentReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware({
         serializableCheck: false
