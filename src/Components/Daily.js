@@ -1,33 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import {Variables} from '../Data/Variables';
-import '../CSS/Weekly.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, ListGroup } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { getWeeklyAppointments, changeCurrentDay, moveToNextWeek, moveToPreviousWeek } from '../Redux/AppointmentSlice';
-import WeeklyCell from './WeeklyCell';
+import DayCell from './DayCell';
+import { changeCurrentDay, moveToNextDay, moveToPreviousDay } from '../Redux/AppointmentSlice';
 import moment from 'moment';
 
 
-function Weekly(props) {
+function Daily(props) {
     const { currentDay, today } = useSelector( (state) => state.appointmentReducer);
-    let weeklyDay = moment(currentDay);     // Must use new variable to prevent state mutation without redux action
-    const [active, setActive] = useState('week');
+    const [active, setActive] = useState('day');
     const dispatch = useDispatch();
 
     useEffect( () => {
         // Get current weeks appointments
-        
+        //if (currentDay.isSame(today, 'week') && !currentDay.isSame(today, 'day')) {
+        //    dispatch(changeCurrentDay(moment(today)));
+        //}
+
         let parameters = {
             employeeId: 42,
-            startDate: weeklyDay.day(0).format('YYYY-MM-DD'),
-            endDate: weeklyDay.day(6).format('YYYY-MM-DD'),
+            //startDate: currentDay.day(0).format('YYYY-MM-DD'),
+            //endDate: currentDay.day(6).format('YYYY-MM-DD'),
         }
 
-        dispatch(getWeeklyAppointments(parameters));
-        dispatch(changeCurrentDay(currentDay.day(0)));
-    }, [dispatch, currentDay])
+        //dispatch(getWeeklyAppointments(parameters));
+        //dispatch(changeCurrentDay(currentDay.day(0)));
+    }, [dispatch, currentDay, today])
 
     
     
@@ -35,14 +36,14 @@ function Weekly(props) {
         <Container>
             <Row>
                 <Col className="text-left">
-                    <Button variant="secondary" className="m-1" onClick={() => dispatch(moveToPreviousWeek())}>
+                    <Button variant="secondary" className="m-1" onClick={() => dispatch(moveToPreviousDay())}>
                         <i className="fas fa-chevron-left fa-fw me-3"></i><span>Previous</span>
                     </Button>
-                    <Button variant="secondary" className="m-1" onClick={() => dispatch(moveToNextWeek())}>
+                    <Button variant="secondary" className="m-1" onClick={() => dispatch(moveToNextDay())}>
                         <i className="fas fa-chevron-right fa-fw me-3"></i><span>Next</span>
                     </Button>
                 </Col>
-                <Col className="pb-2 text-center"><h3>{weeklyDay.day(0).format('MM/DD/YYYY')} - {weeklyDay.day(6).format('MM/DD/YYYY')}</h3></Col>
+                <Col className="pb-2 text-center"><h3>{currentDay.format('dddd, MMM Do, YYYY')}</h3></Col>
                 <Col className="text-center">
                     <ListGroup horizontal activeKey={active} onSelect={(selectedKey) => setActive(selectedKey)}>
                         <ListGroup.Item action eventKey='day' variant="secondary" as={Link} to='/Calendar/Day'>Day</ListGroup.Item>
@@ -52,12 +53,8 @@ function Weekly(props) {
                 </Col>
             </Row>
             <Row>
-                <Col md={1}></Col>
-                {
-                    Variables.WEEKDAYSLONG.map((weekday, i) => {
-                    return <Col key={i} className="border bg-white"><span className="text-center fw-bold">{weekday}</span><br/>{weeklyDay.day(i).format('MM/DD/YYYY')}</Col>
-                })
-                }
+                <Col className='border-start border-top border-end'>Hours scheduled summary</Col>
+                
             </Row>
             <Row>
                 <Col md={1} className='border'>
@@ -69,11 +66,11 @@ function Weekly(props) {
                 )})}
                 </Col>
                 <Col md={11} className='border'>
-                    <WeeklyCell />
+                    <DayCell />
                 </Col>
                 </Row>
         </Container>
     )
 }
 
-export default Weekly;
+export default Daily;

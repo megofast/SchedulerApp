@@ -40,17 +40,17 @@ const AppointmentSlice = createSlice({
         currentDay: moment(),
         today: moment(),
         loading: false,
-        weeklySelectedCells: [],
+        selectedCells: [],
     },
     reducers: {
-        addWeeklySelectedCell: (state, action) => {
-            state.weeklySelectedCells.push(action.payload);
+        addSelectedCell: (state, action) => {
+            state.selectedCells.push(action.payload);
         },
-        resetWeeklySelectedCells: (state) => {
-            state.weeklySelectedCells = [];
+        resetSelectedCells: (state) => {
+            state.selectedCells = [];
         },
-        removeLastWeeklySelectedCell: (state) => {
-            state.weeklySelectedCells.pop();
+        removeLastSelectedCell: (state) => {
+            state.selectedCells.pop();
         },
         moveToNextWeek: (state) => {
             // Move to the next week on the weekly view
@@ -71,6 +71,16 @@ const AppointmentSlice = createSlice({
             state.currentDay = action.payload;
             state.currentDay.hour(0).minute(0).second(0);
             
+        },
+        moveToNextDay: (state) => {
+            let oldDay = moment(state.currentDay);
+            oldDay.add(1, 'days');
+            state.currentDay = oldDay;
+        },
+        moveToPreviousDay: (state) => {
+            let oldDay = moment(state.currentDay);
+            oldDay.subtract(1, 'days');
+            state.currentDay = oldDay;
         },
         moveCalendarToNextMonth: (state) => {
             if (state.currentDay.month() === 11) {
@@ -120,6 +130,6 @@ const AppointmentSlice = createSlice({
 });
 
 export const { moveCalendarToNextMonth, moveCalendarToPreviousMonth, changeCurrentDay, moveToNextWeek, moveToPreviousWeek, 
-    addWeeklySelectedCell, resetWeeklySelectedCells, removeLastWeeklySelectedCell } = AppointmentSlice.actions;
+    addSelectedCell, resetSelectedCells, removeLastSelectedCell, moveToNextDay, moveToPreviousDay } = AppointmentSlice.actions;
 
 export default AppointmentSlice.reducer;

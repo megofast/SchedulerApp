@@ -33,8 +33,8 @@ const Calendar = () => {
                 <Col className="pb-2 text-center"><h3>{Variables.MONTHSLONG[currentDay.month()]} {currentDay.year()}</h3></Col>
                 <Col className="text-center">
                     <ListGroup horizontal activeKey={active} onSelect={(selectedKey) => setActive(selectedKey)}>
-                        <ListGroup.Item action eventKey='day' variant="secondary">Day</ListGroup.Item>
-                        <ListGroup.Item action eventKey='week' variant="secondary" as={Link} to='/Calendar/Weekly' >Week</ListGroup.Item>
+                        <ListGroup.Item action eventKey='day' variant="secondary" as={Link} to='/Calendar/Day'>Day</ListGroup.Item>
+                        <ListGroup.Item action eventKey='week' variant="secondary" as={Link} to='/Calendar/Week' >Week</ListGroup.Item>
                         <ListGroup.Item action eventKey='month' variant="secondary" as={Link} to='/Calendar'>Month</ListGroup.Item>
                     </ListGroup>
                 </Col>

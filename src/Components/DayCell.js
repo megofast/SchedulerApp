@@ -8,11 +8,11 @@ import WeeklyContextMenu from './weeklyContextMenu';
 import { addSelectedCell, resetSelectedCells, removeLastSelectedCell } from '../Redux/AppointmentSlice';
 
 
-function WeeklyCell(props) {
+function DayCell(props) {
     const { weeklyAppointments, selectedCells } = useSelector( (state) => state.appointmentReducer);
     const dispatch = useDispatch();
     const gridRefs = useRef([]);
-    let weeklySchedule = [];
+    let dailySchedule = [];
     const [mouseIsDown, setMouseIsDown] = useState(false);
     const [createMenuIsOpen, setMenuIsOpen] = useState(false);
     const [X, setX] = useState(0);
@@ -68,40 +68,27 @@ function WeeklyCell(props) {
     const preventDrag = (event) => {
         event.preventDefault();
     }
-
-
-    // 2 dimensional array, first dimension is hour row and the 2nd is the column of days in the week
-    for (let x = 0; x < 48; x++) {
-        weeklySchedule.push([]);
-    }
     
     // Change 48 for dynamic time mapping. When the user sets options for less hours on the scheduler
     // Make the grid in the background, assigning IDs to each column to use for position of appointment layer
     for (let hour = 0; hour < 48; hour++) {
-
-        for (let day = 0; day < 7; day++) {
-            let hourlySchedule = {
-                reference: hour * 7 + day,
-                key: "hour" + hour.toString() + "-" + day.toString(),
-            }
-            weeklySchedule[hour].push(hourlySchedule);
+        let hourlySchedule = {
+            reference: hour,
+            key: "hour" + hour.toString(),
         }
+        dailySchedule.push(hourlySchedule);
     }
 
     return (
         <Container className='p-0 m-0'>
             {
-            weeklySchedule.map((hour, i) => {
+            dailySchedule.map((hour, i) => {
                 
                 return (
                     <Row key={"row" + i.toString()}> {
-                    hour.map((day) => {
-                    
-                    return (
-                        
-                        <Col key={day.key} 
-                            id={day.reference}
-                            ref={ (element) => gridRefs.current[day.reference] = element} 
+                        <Col key={hour.key} 
+                            id={hour.reference}
+                            ref={ (element) => gridRefs.current[hour.reference] = element} 
                             className='col-height addBorders schedule-cell' 
                             onMouseDown={ mouseStart } 
                             onMouseUp={ mouseEnd } 
@@ -110,8 +97,6 @@ function WeeklyCell(props) {
                             >
                             <p className='half-time'></p>
                         </Col>
-                    )
-                    })
                     }</Row>
                 )
                 
@@ -128,4 +113,4 @@ function WeeklyCell(props) {
     )
 }
 
-export default WeeklyCell;
+export default DayCell;

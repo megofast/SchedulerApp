@@ -4,6 +4,7 @@ import {Variables} from '../Data/Variables';
 import { ListGroup } from 'react-bootstrap';
 import { useSelector } from "react-redux";
 import NewEvent from '../Components/NewEvent';
+import moment from 'moment';
 
 
 function translatePositionIdToTime(positionId, end) {
@@ -33,11 +34,12 @@ function getDay(positionId) {
 }
 
 function WeeklyContextMenu(props) {
-    const { weeklySelectedCells, currentDay } = useSelector( (state) => state.appointmentReducer);
+    const { selectedCells, currentDay } = useSelector( (state) => state.appointmentReducer);
     const [createModalIsOpen, setModalIsOpen] = useState(false);
-    const [startTime, setStartTime] = useState(translatePositionIdToTime(weeklySelectedCells[0], false));
-    const [endTime, setEndTime] = useState(translatePositionIdToTime(weeklySelectedCells[weeklySelectedCells.length - 1], true));
-    const [date, setDate] = useState(currentDay.day(getDay(weeklySelectedCells[0])).format('YYYY-MM-DD'));
+    const currDate = moment(currentDay);        // Create temporary date to keep state mutation from occuring by using currentDate
+    const [startTime, setStartTime] = useState(translatePositionIdToTime(selectedCells[0], false));
+    const [endTime, setEndTime] = useState(translatePositionIdToTime(selectedCells[selectedCells.length - 1], true));
+    const [date, setDate] = useState(currDate.day(getDay(selectedCells[0])).format('YYYY-MM-DD'));
 
     const handleCreateModalEvent = () => {
         setModalIsOpen(!createModalIsOpen);
