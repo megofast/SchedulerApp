@@ -26,7 +26,6 @@ function Weekly(props) {
         }
 
         dispatch(getWeeklyAppointments(parameters));
-        dispatch(changeCurrentDay(currentDay.day(0)));
     }, [dispatch, currentDay])
     
     return (

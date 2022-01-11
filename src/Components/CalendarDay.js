@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Row, Popover} from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
+import { useDispatch } from "react-redux";
+import CalendarContextMenu from './CalendarContextMenu';
 import moment from 'moment';
+import { changeCurrentDay } from '../Redux/AppointmentSlice';
 
-
-const context_menu = (
-    <Popover id = 'options-menu'>
-        <Popover.Header>Header</Popover.Header>
-        <Popover.Body>This is the body of the menu</Popover.Body>
-    </Popover>
-);
 
 function CalendarDay(props) {
+    const dispatch = useDispatch();
+    const [createMenuIsOpen, setMenuIsOpen] = useState(false);
+    const [X, setX] = useState(0);
+    const [Y, setY] = useState(0);
+    const [selectedDate, setSelectedDate] = useState(moment());
+    const handleMenuEvent = () => {
+        setMenuIsOpen(!createMenuIsOpen);
+    }
+
     let firstDayOfMonth = moment(props.day);
     firstDayOfMonth.date(1);
     let weekdayOfFirstDay = firstDayOfMonth.day();
@@ -20,12 +25,18 @@ function CalendarDay(props) {
         currentDays.push([]);
     }
 
-    const dayClicked = (event) => {
-        console.log(event);
+    const dayClicked = (event, info) => {
+        // Create a moment object to be used to change the current day
+        //setSelectedDate(moment().year(info.year).month(info.month).date(info.number));
+        dispatch(changeCurrentDay(moment().year(info.year).month(info.month).date(info.number)));
+        setX(event.clientX + window.pageXOffset);
+        setY(event.clientY + window.pageYOffset);
+        
+        handleMenuEvent();
     }
 
-    const eventClicked = (event) => {
-        console.log("event");
+    const eventClicked = (appointment) => {
+        console.log(appointment);
     }
 
     let rowNumber = 0;
@@ -51,7 +62,6 @@ function CalendarDay(props) {
         
         let calendarDay = {
           currentMonth: (firstDayOfMonth.month() === props.day.month()),
-          date: firstDayOfMonth,
           month: firstDayOfMonth.month(),
           number: firstDayOfMonth.date(),
           selected: (firstDayOfMonth.isSame(props.day, 'day')),
@@ -68,7 +78,7 @@ function CalendarDay(props) {
     }
 
     return (
-        
+        <> {
         currentDays.map((row, i) => {
             
             return (
@@ -78,11 +88,11 @@ function CalendarDay(props) {
                 return (
                     
                     <Col key={day.key} name={day.key} className={"border calendar-day" + (day.currentMonth ? " current" : "") + (day.selected ? " selected" : "") + (day.isToday ? " today" : "")}
-                            onClick={dayClicked}>
+                            onClick={ (e) => {dayClicked(e, day); }}>
                         <p>{day.number}</p>
                         {day.appointments.map((appointment, i) => {
                             return (
-                            <span className="badge" key={"Badge" + i.toString()} onClick={() => eventClicked()} style={{ backgroundColor: appointment.color }}>{ appointment.title }</span>
+                            <span className="badge" key={"Badge" + i.toString()} onClick={ () => eventClicked(appointment) } style={{ backgroundColor: appointment.color }}>{ appointment.title }</span>
                         )})}
                     </Col>
                 )
@@ -90,7 +100,9 @@ function CalendarDay(props) {
                 }</Row>
             )
             
-        })
+        })}
+        { createMenuIsOpen ? <CalendarContextMenu cx={ X } cy={ Y } closeMenu={ handleMenuEvent } /> : null }
+        </>
     )
 }
 

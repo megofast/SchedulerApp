@@ -89,11 +89,21 @@ function FloatingAppointment(props) {
             width: position.width,
             height: position.height
         }} >
+            { 
+            props.daily ?
+                <p className='m-2 text-center'>
+                    <b>{props.data.title}</b><br />
+                    {moment(props.data.startTime).format('h:mm a')} - {moment(props.data.endTime).format('h:mm a')} <br />
+                    Client: {props.data.clientID} <br />
+                    Notes: {props.data.notes}
+                </p>
+            : 
             <p className='m-2 text-center'>
                 <b>{props.data.title}</b><br />
                 {moment(props.data.startTime).format('h:mm a')} - <br />
                 {moment(props.data.endTime).format('h:mm a')}
             </p>
+            }
         </div>
     )
 }

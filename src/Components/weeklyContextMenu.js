@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Variables} from '../Data/Variables';
 import { ListGroup } from 'react-bootstrap';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { changeCurrentDay } from '../Redux/AppointmentSlice';
 import NewEvent from '../Components/NewEvent';
 import moment from 'moment';
 
@@ -35,11 +37,17 @@ function getDay(positionId) {
 
 function WeeklyContextMenu(props) {
     const { selectedCells, currentDay } = useSelector( (state) => state.appointmentReducer);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [createModalIsOpen, setModalIsOpen] = useState(false);
     const currDate = moment(currentDay);        // Create temporary date to keep state mutation from occuring by using currentDate
     const [startTime, setStartTime] = useState(translatePositionIdToTime(selectedCells[0], false));
     const [endTime, setEndTime] = useState(translatePositionIdToTime(selectedCells[selectedCells.length - 1], true));
     const [date, setDate] = useState(currDate.day(getDay(selectedCells[0])).format('YYYY-MM-DD'));
+
+    useEffect( () => {
+        
+    }, [dispatch, currentDay])
 
     const handleCreateModalEvent = () => {
         setModalIsOpen(!createModalIsOpen);
@@ -58,17 +66,22 @@ function WeeklyContextMenu(props) {
         props.clearSelections();
     }
 
+    const handleViewDay = () => {
+        dispatch(changeCurrentDay(moment(date)));
+        navigate('/Calendar/Day');
+    }
+
     return (
         <>
         <div className='layer border shadow' style={{ backgroundColor: 'white', 
-            left: props.cx,
-            top: props.cy,
+            left: (props.cx > (window.innerWidth - 150)) ? props.cx - 150 : props.cx,
+            top: (props.cy > (window.innerHeight + window.pageYOffset - 120)) ? props.cy - 120 : props.cy,
             width: '150px',
             height: '120px'
         }} >
             <ListGroup variant="flush">
                 <ListGroup.Item action onClick={ () => handleAdd() }>Add New Event</ListGroup.Item>
-                <ListGroup.Item action>Go To Day View</ListGroup.Item>
+                <ListGroup.Item action onClick={ () => handleViewDay() }>View Day</ListGroup.Item>
                 <ListGroup.Item action onClick={ () => handleCancel() }>Cancel Selection</ListGroup.Item>
             </ListGroup>
         </div>
