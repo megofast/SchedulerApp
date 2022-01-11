@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Variables} from '../Data/Variables';
 import '../CSS/Weekly.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Container, Row, Button, ListGroup } from 'react-bootstrap';
+import { Col, Container, Row, Button, ListGroup, Badge } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getWeeklyAppointments, changeCurrentDay, moveToNextWeek, moveToPreviousWeek } from '../Redux/AppointmentSlice';
@@ -28,8 +28,6 @@ function Weekly(props) {
         dispatch(getWeeklyAppointments(parameters));
         dispatch(changeCurrentDay(currentDay.day(0)));
     }, [dispatch, currentDay])
-
-    
     
     return (
         <Container>
@@ -55,7 +53,11 @@ function Weekly(props) {
                 <Col md={1}></Col>
                 {
                     Variables.WEEKDAYSLONG.map((weekday, i) => {
-                    return <Col key={i} className="border bg-white"><span className="text-center fw-bold">{weekday}</span><br/>{weeklyDay.day(i).format('MM/DD/YYYY')}</Col>
+                    return (
+                    <Col key={i} className="border bg-white">
+                        <span className="text-center fw-bold">{weekday}{ weeklyDay.day(i).isSame(today, 'day') ? <Badge bg='primary'>Today</Badge> : null }</span>
+                        <br/>{weeklyDay.day(i).format('MM/DD/YYYY')}
+                    </Col>)
                 })
                 }
             </Row>

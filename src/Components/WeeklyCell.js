@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../CSS/Weekly.css'
 import { Col, Container, Row} from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
-import WeeklyAppointment from './WeeklyAppointment';
+import FloatingAppointment from './FloatingAppointment';
 import WeeklyContextMenu from './weeklyContextMenu';
 import { addSelectedCell, resetSelectedCells, removeLastSelectedCell } from '../Redux/AppointmentSlice';
 
@@ -118,7 +118,7 @@ function WeeklyCell(props) {
             })} {
             weeklyAppointments.map( (appointment, i) => {
                 return (
-                <WeeklyAppointment key={i} data={appointment} references={gridRefs} />
+                <FloatingAppointment key={i} data={appointment} references={gridRefs} daily={ false } />
                 )
             })
             }

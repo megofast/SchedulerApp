@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import moment from 'moment';
 
-function translateTimeToPositionId(time) {
+function translateTimeToPositionId(time, daily) {
     let timeMoment = moment(time);
     let hour = timeMoment.hour();
     let minute = timeMoment.minute();
@@ -11,8 +11,11 @@ function translateTimeToPositionId(time) {
     if (minute >= 30) {
         gridHour = gridHour + 1;
     }
-
-    return (gridHour * 7 + day);
+    if (daily) {
+        return gridHour;
+    } else {
+        return (gridHour * 7 + day);
+    }
 }
 
 // This function will adjust the floating layer up or down depending on the exact minutes
@@ -34,7 +37,7 @@ function getAdjustedPosition(time) {
     return adjustedPixels;
 }
 
-function WeeklyAppointment(props) {
+function FloatingAppointment(props) {
     let position = {
         left: 0,
         top: 0,
@@ -43,14 +46,12 @@ function WeeklyAppointment(props) {
         bottom: 0,
     }
 
-    
-
-    if (props.references.current[translateTimeToPositionId(props.data.startTime)] !== undefined) {
-        position.left = props.references.current[translateTimeToPositionId(props.data.startTime)].getBoundingClientRect().left + window.pageXOffset;
-        position.top = props.references.current[translateTimeToPositionId(props.data.startTime)].getBoundingClientRect().top + getAdjustedPosition(props.data.startTime) + window.pageYOffset;
-        position.width = props.references.current[translateTimeToPositionId(props.data.startTime)].getBoundingClientRect().width;
-        position.height = props.references.current[translateTimeToPositionId(props.data.endTime)].getBoundingClientRect().top -
-                        props.references.current[translateTimeToPositionId(props.data.startTime)].getBoundingClientRect().top;
+    if (props.references.current[translateTimeToPositionId(props.data.startTime, props.daily)] !== undefined) {
+        position.left = props.references.current[translateTimeToPositionId(props.data.startTime, props.daily)].getBoundingClientRect().left + window.pageXOffset;
+        position.top = props.references.current[translateTimeToPositionId(props.data.startTime, props.daily)].getBoundingClientRect().top + getAdjustedPosition(props.data.startTime) + window.pageYOffset;
+        position.width = props.references.current[translateTimeToPositionId(props.data.startTime, props.daily)].getBoundingClientRect().width;
+        position.height = props.references.current[translateTimeToPositionId(props.data.endTime, props.daily)].getBoundingClientRect().top -
+                        props.references.current[translateTimeToPositionId(props.data.startTime, props.daily)].getBoundingClientRect().top;
         if (getAdjustedPosition(props.data.startTime) > 0) {
             // Handle the height of the appointment box based on the adjusted start position and the end time
             let time = moment(props.data.endTime);
@@ -67,7 +68,7 @@ function WeeklyAppointment(props) {
                 position.height = position.height + getAdjustedPosition(time);
             } 
         }
-        position.bottom = props.references.current[translateTimeToPositionId(props.data.endTime)].getBoundingClientRect().top;
+        position.bottom = props.references.current[translateTimeToPositionId(props.data.endTime, props.daily)].getBoundingClientRect().top;
     }
 
     
@@ -97,4 +98,4 @@ function WeeklyAppointment(props) {
     )
 }
 
-export default WeeklyAppointment;
+export default FloatingAppointment;

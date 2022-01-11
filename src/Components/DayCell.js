@@ -3,13 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../CSS/Weekly.css'
 import { Col, Container, Row} from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
-import WeeklyAppointment from './WeeklyAppointment';
-import WeeklyContextMenu from './weeklyContextMenu';
+import FloatingAppointment from './FloatingAppointment';
+import DailyContextMenu from './DailyContextMenu';
 import { addSelectedCell, resetSelectedCells, removeLastSelectedCell } from '../Redux/AppointmentSlice';
 
 
 function DayCell(props) {
-    const { weeklyAppointments, selectedCells } = useSelector( (state) => state.appointmentReducer);
+    const { dailyAppointments, selectedCells } = useSelector( (state) => state.appointmentReducer);
     const dispatch = useDispatch();
     const gridRefs = useRef([]);
     let dailySchedule = [];
@@ -53,7 +53,7 @@ function DayCell(props) {
     }
 
     const mouseSelected = (event) => {
-        if (mouseIsDown && (event.target.id - startId) % 7 === 0) {
+        if (mouseIsDown) {
             if (parseInt(event.target.id) < selectedCells[selectedCells.length - 1]) {
                 // The cursor was moved back to a previous cell, remove the highlighting from the cell below
                 gridRefs.current[selectedCells[selectedCells.length - 1]].style.backgroundColor = 'white';
@@ -101,13 +101,13 @@ function DayCell(props) {
                 )
                 
             })} {
-            weeklyAppointments.map( (appointment, i) => {
+            dailyAppointments.map( (appointment, i) => {
                 return (
-                <WeeklyAppointment key={i} data={appointment} references={gridRefs} />
+                <FloatingAppointment key={i} data={appointment} references={gridRefs} daily={true} />
                 )
             })
             }
-            { createMenuIsOpen ? <WeeklyContextMenu cx={ X } cy={ Y } closeMenu={ handleMenuEvent } clearSelections={ clearSelections } /> : null }
+            { createMenuIsOpen ? <DailyContextMenu cx={ X } cy={ Y } closeMenu={ handleMenuEvent } clearSelections={ clearSelections } /> : null }
         </Container>
         
     )

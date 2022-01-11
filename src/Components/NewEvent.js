@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { getAppointments, getWeeklyAppointments } from '../Redux/AppointmentSlice'
+import moment from 'moment';
 
 const NewEvent = (props) => {
     const { currentDay } = useSelector( (state) => state.appointmentReducer);
+    let currDay = moment(currentDay);       // To prevent changing of the stored state
     const dispatch = useDispatch();
     const [data, setData] = useState({
         title: "",
@@ -74,8 +76,8 @@ const NewEvent = (props) => {
 
             let parameters = {
                 employeeId: 42,
-                startDate: currentDay.day(0).format('YYYY-MM-DD'),
-                endDate: currentDay.day(6).format('YYYY-MM-DD'),
+                startDate: currDay.day(0).format('YYYY-MM-DD'),
+                endDate: currDay.day(6).format('YYYY-MM-DD'),
             }
 
             dispatch(getWeeklyAppointments(parameters));

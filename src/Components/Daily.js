@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {Variables} from '../Data/Variables';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Container, Row, Button, ListGroup } from 'react-bootstrap';
+import { Col, Container, Row, Button, ListGroup, Badge } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import DayCell from './DayCell';
-import { changeCurrentDay, moveToNextDay, moveToPreviousDay } from '../Redux/AppointmentSlice';
+import { getDailyAppointments, moveToNextDay, moveToPreviousDay } from '../Redux/AppointmentSlice';
 import moment from 'moment';
 
 
@@ -22,13 +22,11 @@ function Daily(props) {
 
         let parameters = {
             employeeId: 42,
-            //startDate: currentDay.day(0).format('YYYY-MM-DD'),
-            //endDate: currentDay.day(6).format('YYYY-MM-DD'),
+            date: currentDay.format('YYYY-MM-DD'),
         }
 
-        //dispatch(getWeeklyAppointments(parameters));
-        //dispatch(changeCurrentDay(currentDay.day(0)));
-    }, [dispatch, currentDay, today])
+        dispatch(getDailyAppointments(parameters));
+    }, [dispatch, currentDay])
 
     
     
@@ -43,7 +41,7 @@ function Daily(props) {
                         <i className="fas fa-chevron-right fa-fw me-3"></i><span>Next</span>
                     </Button>
                 </Col>
-                <Col className="pb-2 text-center"><h3>{currentDay.format('dddd, MMM Do, YYYY')}</h3></Col>
+                <Col className="pb-2 text-center"><h3>{currentDay.format('dddd, MMM Do, YYYY')}{ currentDay.isSame(today, 'day') ? <Badge bg='primary'>Today</Badge> : null }</h3></Col>
                 <Col className="text-center">
                     <ListGroup horizontal activeKey={active} onSelect={(selectedKey) => setActive(selectedKey)}>
                         <ListGroup.Item action eventKey='day' variant="secondary" as={Link} to='/Calendar/Day'>Day</ListGroup.Item>

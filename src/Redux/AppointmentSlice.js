@@ -16,6 +16,15 @@ export const getWeeklyAppointments = createAsyncThunk(
     .catch((error) => error)
     });
 
+export const getDailyAppointments = createAsyncThunk(
+    "appointments/getDailyAppointments", async (parameters) => {
+    
+    return axios
+    .get(Variables.API_URL + `appointment/day/${parameters.employeeId}/${parameters.date}`)
+    .then((response) => response.data)
+    .catch((error) => error)
+    });
+
 const getCurrentMonthAppointments = (appointments, currentMonth) => {
     let tempAppointments = [];
     appointments.forEach( (appointment) => {
@@ -124,7 +133,16 @@ const AppointmentSlice = createSlice({
         },
         [getWeeklyAppointments.rejected]: (state, action) => {
             state.loading = false;
-
+        },
+        [getDailyAppointments.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [getDailyAppointments.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.dailyAppointments = action.payload;
+        },
+        [getDailyAppointments.rejected]: (state, action) => {
+            state.loading = false;
         },
     },
 });
