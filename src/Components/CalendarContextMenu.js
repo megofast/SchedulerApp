@@ -51,7 +51,7 @@ function CalendarContextMenu(props) {
                 <ListGroup.Item action onClick={ () => handleCancel() }>Cancel Selection</ListGroup.Item>
             </ListGroup>
         </div>
-        <NewEvent createModalOpen={createModalIsOpen} handleCreateModalOpen={handleCreateModalEvent} date={ date }/>
+        <NewEvent createModalOpen={createModalIsOpen} handleCreateModalOpen={handleCreateModalEvent} start='' end='' date={ date }/>
         </>
     )
 }

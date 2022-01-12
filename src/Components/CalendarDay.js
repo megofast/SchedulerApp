@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Row } from 'react-bootstrap';
+import { Col, OverlayTrigger, Row, Popover } from 'react-bootstrap';
 import { useDispatch } from "react-redux";
 import CalendarContextMenu from './CalendarContextMenu';
 import moment from 'moment';
-import { changeCurrentDay } from '../Redux/AppointmentSlice';
+import { changeCurrentDay, getAppointments } from '../Redux/AppointmentSlice';
+import {Variables} from '../Data/Variables';
 
 
 function CalendarDay(props) {
     const dispatch = useDispatch();
     const [createMenuIsOpen, setMenuIsOpen] = useState(false);
+    const [appSummaryShow, setAppSummaryShow] = useState(false);
     const [X, setX] = useState(0);
     const [Y, setY] = useState(0);
-    const [selectedDate, setSelectedDate] = useState(moment());
     const handleMenuEvent = () => {
         setMenuIsOpen(!createMenuIsOpen);
     }
@@ -25,18 +26,57 @@ function CalendarDay(props) {
         currentDays.push([]);
     }
 
-    const dayClicked = (event, info) => {
-        // Create a moment object to be used to change the current day
-        //setSelectedDate(moment().year(info.year).month(info.month).date(info.number));
-        dispatch(changeCurrentDay(moment().year(info.year).month(info.month).date(info.number)));
-        setX(event.clientX + window.pageXOffset);
-        setY(event.clientY + window.pageYOffset);
-        
-        handleMenuEvent();
+    const deleteClick = (id) => {
+        if(window.confirm('Are you sure you want to delete this appointment?')) {
+            fetch(Variables.API_URL + 'appointment/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then((result) => {
+                dispatch(getAppointments());
+                alert(result);
+            }, (error) => {
+                alert('Failed to delete appointment.');
+            });
+        }
     }
 
-    const eventClicked = (appointment) => {
-        console.log(appointment);
+    const appointmentPopover = (appointment) => {
+        return (
+            <Popover id="popover-appointment">
+                <Popover.Header as="h3">{appointment.title}</Popover.Header>
+                <Popover.Body>
+                {moment(appointment.startTime).format('h:mm a')} - {moment(appointment.endTime).format('h:mm a')} <br />
+                    Client: {appointment.clientID} <br />
+                    Notes: {appointment.notes} <br />
+                    <button type="button" className="btn mr-1" data-bs-toggle="modal" data-bs-target="#modalOptions">
+                        <i className="far fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" className="btn mr-1" onClick={() => deleteClick(appointment.appointmentID)}>
+                        <i className="far fa-trash-alt"></i>
+                    </button>
+                </Popover.Body>
+            </Popover>
+        )
+    }
+
+    const appClicked = (event) => {
+        setAppSummaryShow(!appSummaryShow);
+    }
+
+    const dayClicked = (event, info) => {
+        // This conditional block prevents even propogation to the parent
+        if (event.target.tagName === 'DIV' && event.target.classList.contains('calendar-day') && appSummaryShow === false) {
+            dispatch(changeCurrentDay(moment().year(info.year).month(info.month).date(info.number)));
+            setX(event.clientX + window.pageXOffset);
+            setY(event.clientY + window.pageYOffset);
+            
+            handleMenuEvent();
+        }
     }
 
     let rowNumber = 0;
@@ -92,7 +132,9 @@ function CalendarDay(props) {
                         <p>{day.number}</p>
                         {day.appointments.map((appointment, i) => {
                             return (
-                            <span className="badge" key={"Badge" + i.toString()} onClick={ () => eventClicked(appointment) } style={{ backgroundColor: appointment.color }}>{ appointment.title }</span>
+                            <OverlayTrigger key={i} rootClose='true' trigger="click" placement="auto" onExited={ appClicked } overlay={appointmentPopover(appointment)}>
+                                <span className="badge cursor-pointer" key={"Badge" + i.toString()} onClick={ appClicked } style={{ backgroundColor: appointment.color }}>{ appointment.title }</span>
+                            </OverlayTrigger>
                         )})}
                     </Col>
                 )

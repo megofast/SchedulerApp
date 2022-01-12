@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Col, Row, Card, Form, FloatingLabel, Button } from 'react-bootstrap';
-import {fakeAuth} from '../Authentication';
+import {userAuth} from '../Authentication';
 
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
     const loginButtonClicked = () => {
         console.log(data);
         if (data.username === 'test') {
-            fakeAuth.authenticate();
+            userAuth.authenticate();
             navigate("/");
         }
     }
