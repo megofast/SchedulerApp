@@ -15,13 +15,7 @@ function Daily(props) {
     const dispatch = useDispatch();
 
     useEffect( () => {
-        // Get current weeks appointments
-        //if (currentDay.isSame(today, 'week') && !currentDay.isSame(today, 'day')) {
-        //    dispatch(changeCurrentDay(moment(today)));
-        //}
-
         let parameters = {
-            employeeId: 42,
             date: currentDay.format('YYYY-MM-DD'),
         }
 

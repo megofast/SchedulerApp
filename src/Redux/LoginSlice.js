@@ -12,7 +12,7 @@ export const checkLoginCredentials = createAsyncThunk(
         username: parameters.username,
         password: parameters.password,
     });
-
+    
     return axios
     .post(Variables.API_URL + "login", userLoginDetails, {
         headers: {
@@ -25,6 +25,7 @@ export const checkLoginCredentials = createAsyncThunk(
 const LoginSlice = createSlice({
     name: "authenticatedUser",
     initialState: {
+        failedAttempt: false,
         loading: false,
         isAuthenticated: false,
         token: "",
@@ -32,8 +33,11 @@ const LoginSlice = createSlice({
         employee: []
     },
     reducers: {
-        addSelectedCell: (state, action) => {
-            state.selectedCells.push(action.payload);
+        logout: (state, action) => {
+            state.token = "";
+            state.employee = [];
+            state.employeeID = null;
+            state.isAuthenticated = false;
         },
     },
     extraReducers: {
@@ -41,6 +45,7 @@ const LoginSlice = createSlice({
             state.loading = true;
         },
         [checkLoginCredentials.fulfilled]: (state, action) => {
+            state.failedAttempt = false;
             state.loading = false;
             state.token = action.payload;
             state.employee = jwtDecode(action.payload);
@@ -48,12 +53,13 @@ const LoginSlice = createSlice({
             state.isAuthenticated = true;
         },
         [checkLoginCredentials.rejected]: (state, action) => {
+            state.failedAttempt = true;
             state.loading = false;
             state.isAuthenticated = false;   
         },
     },
 });
 
-export const { moveCalendarToNextMonth } = LoginSlice.actions;
+export const { logout } = LoginSlice.actions;
 
 export default LoginSlice.reducer;

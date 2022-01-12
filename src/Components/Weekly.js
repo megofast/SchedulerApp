@@ -18,9 +18,7 @@ function Weekly(props) {
 
     useEffect( () => {
         // Get current weeks appointments
-        
         let parameters = {
-            employeeId: 42,
             startDate: weeklyDay.day(0).format('YYYY-MM-DD'),
             endDate: weeklyDay.day(6).format('YYYY-MM-DD'),
         }

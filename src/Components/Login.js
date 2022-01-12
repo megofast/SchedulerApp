@@ -7,7 +7,7 @@ import { checkLoginCredentials } from '../Redux/LoginSlice';
 
 
 function App() {
-    const { isAuthenticated, loading } = useSelector( (state) => state.loginReducer);
+    const { isAuthenticated, loading, failedAttempt } = useSelector( (state) => state.loginReducer);
     const [data, setData] = useState({
         username: "",
         password: "",
@@ -40,7 +40,14 @@ function App() {
         if (isAuthenticated) {
             navigate("/");
         }
-    }, [isAuthenticated, navigate])
+        if (failedAttempt) {
+            setData({
+                username: "",
+                password: ""
+            });
+            alert("Incorrect Credentials");
+        }
+    }, [isAuthenticated, navigate, failedAttempt])
 
     return (
       <Container fluid className="mx-0 px-0">
@@ -62,7 +69,10 @@ function App() {
                                 </FloatingLabel>
                             </Form.Group>
                             <div className="d-grid gap-2">
-                            <Button variant="primary" className="text-uppercase fw-bold btn-block" onClick={loginButtonClicked}>Sign In</Button>
+                            <Button variant="primary" className="text-uppercase fw-bold btn-block" onClick={loginButtonClicked}>
+                                { loading ? <i className="fa fa-spinner fa-spin"></i> : `Sign In` }
+                                
+                            </Button>
                             <hr className="my-4"></hr>
                             <Button variant="primary" className="text-uppercase fw-bold btn-block">Register</Button>
                             </div>

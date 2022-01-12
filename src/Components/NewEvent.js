@@ -3,25 +3,27 @@ import {Variables} from '../Data/Variables';
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getAppointments, getWeeklyAppointments } from '../Redux/AppointmentSlice'
+import { getMonthlyAppointments, getWeeklyAppointments, getDailyAppointments } from '../Redux/AppointmentSlice'
 import moment from 'moment';
+import axios from 'axios';
 
 const NewEvent = (props) => {
     const { currentDay } = useSelector( (state) => state.appointmentReducer);
+    const { token, employeeID} = useSelector( (state) => state.loginReducer);
     let currDay = moment(currentDay);       // To prevent changing of the stored state
     const dispatch = useDispatch();
     const [data, setData] = useState({
         title: "",
-            appointmentID: "",
-            employeeID: "",
-            clientID: "",
-            appDate: props.date,
-            startTime: props.start,
-            endTime: props.end,
-            notes: "",
-            color: "#ffffff",
-            fixedStart: props.date + ' ' + props.start,
-            fixedEnd: props.date + ' ' + props.end,
+        appointmentID: "",
+        employeeID: employeeID,
+        clientID: "",
+        appDate: props.date,
+        startTime: props.start,
+        endTime: props.end,
+        notes: "",
+        color: "#ffffff",
+        fixedStart: props.date + ' ' + props.start,
+        fixedEnd: props.date + ' ' + props.end,
     });
     
     const updateData = (event) => {
@@ -51,40 +53,49 @@ const NewEvent = (props) => {
     }
     
     const createClick = () => {
-        console.log(data);
-        fetch(Variables.API_URL + 'appointment', {
-            method: 'POST',
+        const appointmentData = JSON.stringify({
+            employeeID: data.employeeID,
+            clientID: data.clientID,
+            appDate: data.appDate,
+            startTime: data.fixedStart,
+            endTime: data.fixedEnd,
+            notes: data.notes,
+            title: data.title,
+            color: data.color
+        });
+
+        axios.post(Variables.API_URL + "appointment", appointmentData, {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body:JSON.stringify({
-                employeeID: data.employeeID,
-                clientID: data.clientID,
-                appDate: data.appDate,
-                startTime: data.fixedStart,
-                endTime: data.fixedEnd,
-                notes: data.notes,
-                title: data.title,
-                color: data.color
-            })
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
         })
-        .then(response => response.json())
-        .then((result) => {
-            // Success, update the data in the data store
-            dispatch(getAppointments());
-
+        .then(response => {
+            // Success
             let parameters = {
-                employeeId: 42,
-                startDate: currDay.day(0).format('YYYY-MM-DD'),
+                month: currentDay.month(),
+                year: currentDay.year(),
+            };
+            dispatch(getMonthlyAppointments(parameters));
+
+            parameters = {
+                startDate: currDay.day(0).format('YYYY-MM-DD'),     // Use currDay to prevent modifying CurrentDay state
                 endDate: currDay.day(6).format('YYYY-MM-DD'),
             }
-
             dispatch(getWeeklyAppointments(parameters));
+
+            parameters = {
+                date: currentDay.format('YYYY-MM-DD'),
+            }
+            dispatch(getDailyAppointments(parameters));
+
             props.handleCreateModalOpen();
-            alert(result);
-        }, (error) => {
-            alert('Failed to create appointment.');
+            alert(response.data);
+        })
+        .catch(error => {
+            // Failed
+            console.log(error);
         });
     } 
 
@@ -99,10 +110,6 @@ const NewEvent = (props) => {
                   <Form.Group className="mb-3" controlId="formTitle">
                       <Form.Label>Title</Form.Label>
                       <Form.Control name="title" type="string" placeholder="title" value={data.title} onChange={updateData}/>
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formEmployeeID">
-                      <Form.Label>employeeID</Form.Label>
-                      <Form.Control name="employeeID" type="number" placeholder="EmployeeID" value={data.employeeID} onChange={updateData}/>
                   </Form.Group>
                   <Form.Group className="mb-3" controlId="formClientID">
                       <Form.Label>clientID</Form.Label>
