@@ -35,7 +35,7 @@ const AppointmentsList = (props) => {
                     year: currentDay.year(),
                 };
                 dispatch(getMonthlyAppointments(parameters));
-                console.log(response.data);
+                alert(response.data);
             })
             .catch(error => {
                 // Failed
@@ -49,7 +49,7 @@ const AppointmentsList = (props) => {
 
     if (loading) {
         return (
-            <div>loading...</div>
+            <div><i className="fa fa-spinner fa-spin"></i></div>
         )
     } else {
         return (
@@ -68,7 +68,8 @@ const AppointmentsList = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {monthAppointments.map(appoint =>
+                        {Array.isArray(monthAppointments)
+                        ? monthAppointments.map(appoint =>
                             <tr key = {appoint.appointmentID}>
                                 <td>{appoint.title}</td>
                                 <td>{appoint.clientID}</td>
@@ -86,7 +87,8 @@ const AppointmentsList = (props) => {
                                     </button>
                                 </td>
                             </tr>
-                            )}
+                        )
+                        : null }
                     </tbody>
                 </table>
             </div>

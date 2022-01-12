@@ -93,12 +93,15 @@ function CalendarDay(props) {
         let currentDate = moment(firstDayOfMonth);
         let dayAppointments = [];
         
-        props.data.forEach((appointment) => {
-            let appointmentDate = moment(appointment.appDate);
-            if (appointmentDate.isSame(currentDate, 'day') ) {
-                dayAppointments.push(appointment);
-            }
-        })
+        // If for some reason the props do not come through this will prevent an exception from occuring
+        if (Array.isArray(props.data)) {
+            props.data.forEach((appointment) => {
+                let appointmentDate = moment(appointment.appDate);
+                if (appointmentDate.isSame(currentDate, 'day') ) {
+                    dayAppointments.push(appointment);
+                }
+            })
+        }
         
         let calendarDay = {
           currentMonth: (firstDayOfMonth.month() === props.day.month()),
