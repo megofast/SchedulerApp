@@ -9,9 +9,11 @@ import Daily from './Components/Daily';
 import AppointmentsList from './Components/AppointmentsList';
 import {userAuth} from './Authentication';
 import MainLayout from './Components/MainLayout';
+import { useSelector } from "react-redux";
 
 function RequireAuthorization( { children } ) {
-  if (!userAuth.isAuthenticated) {
+  const { isAuthenticated } = useSelector( (state) => state.loginReducer);
+  if (!isAuthenticated) {
     return <Navigate to="/Login" />;
   } else {
     return children;

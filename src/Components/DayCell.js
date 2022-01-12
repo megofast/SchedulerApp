@@ -100,12 +100,13 @@ function DayCell(props) {
                     }</Row>
                 )
                 
-            })} {
-            dailyAppointments.map( (appointment, i) => {
-                return (
-                <FloatingAppointment key={i} data={appointment} references={gridRefs} daily={true} />
-                )
-            })
+            })} { Array.isArray(dailyAppointments)
+                ?   dailyAppointments.map( (appointment, i) => {
+                        return (
+                            <FloatingAppointment key={i} data={appointment} references={gridRefs} daily={true} />
+                        )
+                    })
+                : null
             }
             { createMenuIsOpen ? <DailyContextMenu cx={ X } cy={ Y } closeMenu={ handleMenuEvent } clearSelections={ clearSelections } /> : null }
         </Container>

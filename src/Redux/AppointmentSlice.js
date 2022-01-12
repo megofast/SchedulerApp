@@ -8,19 +8,27 @@ export const getAppointments = createAsyncThunk("appointments/getAppointment", a
 });
 
 export const getWeeklyAppointments = createAsyncThunk(
-    "appointments/getWeeklyAppointments", async (parameters) => {
-    
+    "appointments/getWeeklyAppointments", async (parameters, {getState}) => {
+    const state = getState();       // Get the state so the login token can be used
     return axios
-    .get(Variables.API_URL + `appointment/week/${parameters.employeeId}/${parameters.startDate}/${parameters.endDate}`)
+    .get(Variables.API_URL + `appointment/week/${parameters.employeeId}/${parameters.startDate}/${parameters.endDate}`,{
+        headers: {
+            Authorization: `Bearer ${state.loginReducer.token}`
+        }
+    })
     .then((response) => response.data)
     .catch((error) => error)
     });
 
 export const getDailyAppointments = createAsyncThunk(
-    "appointments/getDailyAppointments", async (parameters) => {
-    
+    "appointments/getDailyAppointments", async (parameters, {getState}) => {
+    const state = getState();       // Get the state so the login token can be used
     return axios
-    .get(Variables.API_URL + `appointment/day/${parameters.employeeId}/${parameters.date}`)
+    .get(Variables.API_URL + `appointment/day/${parameters.employeeId}/${parameters.date}`, {
+        headers: {
+            Authorization: `Bearer ${state.loginReducer.token}`
+        }
+    })
     .then((response) => response.data)
     .catch((error) => error)
     });

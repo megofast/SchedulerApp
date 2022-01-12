@@ -116,12 +116,14 @@ function WeeklyCell(props) {
                 )
                 
             })} {
-            weeklyAppointments.map( (appointment, i) => {
-                return (
-                <FloatingAppointment key={i} data={appointment} references={gridRefs} daily={ false } />
-                )
-            })
-            }
+                    Array.isArray(weeklyAppointments)
+                    ?   weeklyAppointments.map( (appointment, i) => {
+                            return (
+                                <FloatingAppointment key={i} data={appointment} references={gridRefs} daily={ false } />
+                            )
+                        })
+                    : null
+                }
             { createMenuIsOpen ? <WeeklyContextMenu cx={ X } cy={ Y } closeMenu={ handleMenuEvent } clearSelections={ clearSelections } /> : null }
         </Container>
         

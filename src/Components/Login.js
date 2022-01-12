@@ -1,17 +1,21 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Col, Row, Card, Form, FloatingLabel, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from "react-redux";
+import { checkLoginCredentials } from '../Redux/LoginSlice';
 import {userAuth} from '../Authentication';
 
 
 function App() {
+    const { isAuthenticated, loading } = useSelector( (state) => state.loginReducer);
     const [data, setData] = useState({
         username: "",
         password: "",
     });
 
     let navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const updateData = (event) => {
         const name = event.target.name;
@@ -25,11 +29,22 @@ function App() {
 
     const loginButtonClicked = () => {
         console.log(data);
-        if (data.username === 'test') {
-            userAuth.authenticate();
+        
+        let parameters = {
+            username: data.username,
+            password: data.password,
+        };
+        
+        dispatch(checkLoginCredentials(parameters));
+    }
+
+    useEffect( () => {
+        // Check if the user is authenticated, if so forward to the main layout
+        if (isAuthenticated) {
+            console.log("userAuth.token");
             navigate("/");
         }
-    }
+    }, [isAuthenticated, navigate])
 
     return (
       <Container fluid className="mx-0 px-0">
