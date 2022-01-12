@@ -4,7 +4,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Col, Row, Card, Form, FloatingLabel, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import { checkLoginCredentials } from '../Redux/LoginSlice';
-import {userAuth} from '../Authentication';
 
 
 function App() {
@@ -27,9 +26,7 @@ function App() {
         }))
     }
 
-    const loginButtonClicked = () => {
-        console.log(data);
-        
+    const loginButtonClicked = () => {        
         let parameters = {
             username: data.username,
             password: data.password,
@@ -41,7 +38,6 @@ function App() {
     useEffect( () => {
         // Check if the user is authenticated, if so forward to the main layout
         if (isAuthenticated) {
-            console.log("userAuth.token");
             navigate("/");
         }
     }, [isAuthenticated, navigate])

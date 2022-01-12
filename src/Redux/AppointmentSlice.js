@@ -7,6 +7,19 @@ export const getAppointments = createAsyncThunk("appointments/getAppointment", a
     return fetch(Variables.API_URL + "appointment").then(res => res.json());
 });
 
+export const getMonthlyAppointments = createAsyncThunk(
+    "appointments/getMonthlyAppointments", async (parameters, {getState}) => {
+    const state = getState();       // Get the state so the login token can be used
+    return axios
+    .get(Variables.API_URL + `appointment/month/${state.loginReducer.employeeID}/${parameters.month}/${parameters.year}`, {
+        headers: {
+            Authorization: `Bearer ${state.loginReducer.token}`
+        }
+    })
+    .then((response) => response.data)
+    .catch((error) => error)
+});
+
 export const getWeeklyAppointments = createAsyncThunk(
     "appointments/getWeeklyAppointments", async (parameters, {getState}) => {
     const state = getState();       // Get the state so the login token can be used
@@ -18,7 +31,7 @@ export const getWeeklyAppointments = createAsyncThunk(
     })
     .then((response) => response.data)
     .catch((error) => error)
-    });
+});
 
 export const getDailyAppointments = createAsyncThunk(
     "appointments/getDailyAppointments", async (parameters, {getState}) => {
@@ -31,7 +44,7 @@ export const getDailyAppointments = createAsyncThunk(
     })
     .then((response) => response.data)
     .catch((error) => error)
-    });
+});
 
 const getCurrentMonthAppointments = (appointments, currentMonth) => {
     let tempAppointments = [];
@@ -107,7 +120,7 @@ const AppointmentSlice = createSlice({
             }
 
             state.currentMonth = state.currentDay.month();
-            state.monthAppointments = getCurrentMonthAppointments(state.appointments, state.currentMonth);
+            //state.monthAppointments = getCurrentMonthAppointments(state.appointments, state.currentMonth);
         },
         moveCalendarToPreviousMonth: (state) => {
             if (state.currentDay.month() === 0) {
@@ -117,7 +130,7 @@ const AppointmentSlice = createSlice({
             }
 
             state.currentMonth = state.currentDay.month();
-            state.monthAppointments = getCurrentMonthAppointments(state.appointments, state.currentMonth);
+            //state.monthAppointments = getCurrentMonthAppointments(state.appointments, state.currentMonth);
         },
     },
     extraReducers: {
@@ -127,10 +140,20 @@ const AppointmentSlice = createSlice({
         [getAppointments.fulfilled]: (state, action) => {
             state.loading = false;
             state.appointments = action.payload;
-            state.monthAppointments = getCurrentMonthAppointments(action.payload, state.currentMonth);
+            //state.monthAppointments = getCurrentMonthAppointments(action.payload, state.currentMonth);
         },
         [getAppointments.rejected]: (state, action) => {
             state.loading = false;   
+        },
+        [getMonthlyAppointments.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [getMonthlyAppointments.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.monthAppointments = action.payload;
+        },
+        [getMonthlyAppointments.rejected]: (state, action) => {
+            state.loading = false;
         },
         [getWeeklyAppointments.pending]: (state, action) => {
             state.loading = true;

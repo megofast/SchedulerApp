@@ -4,7 +4,7 @@ import { Col, OverlayTrigger, Row, Popover } from 'react-bootstrap';
 import { useDispatch } from "react-redux";
 import CalendarContextMenu from './CalendarContextMenu';
 import moment from 'moment';
-import { changeCurrentDay, getAppointments } from '../Redux/AppointmentSlice';
+import { changeCurrentDay, getMonthlyAppointments } from '../Redux/AppointmentSlice';
 import {Variables} from '../Data/Variables';
 
 
@@ -37,7 +37,7 @@ function CalendarDay(props) {
             })
             .then(response => response.json())
             .then((result) => {
-                dispatch(getAppointments());
+                dispatch(getMonthlyAppointments());
                 alert(result);
             }, (error) => {
                 alert('Failed to delete appointment.');

@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 import { Container, Row, Col, Button, ListGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CalendarDay from './CalendarDay';
-import { moveCalendarToNextMonth, moveCalendarToPreviousMonth, getAppointments } from '../Redux/AppointmentSlice'
+import { moveCalendarToNextMonth, moveCalendarToPreviousMonth, getMonthlyAppointments } from '../Redux/AppointmentSlice'
 
 const Calendar = () => {
     const { monthAppointments, currentDay, today} = useSelector( (state) => state.appointmentReducer);
@@ -14,8 +14,11 @@ const Calendar = () => {
     const [active, setActive] = useState('month');
            
     useEffect( () => {
-        dispatch(getAppointments());
-        //dispatch(updateWeeklyAppointments(currentDay.toString()));
+        let parameters = {
+            month: currentDay.month(),
+            year: currentDay.year(),
+        };
+        dispatch(getMonthlyAppointments(parameters));
         
     }, [dispatch, currentDay])
 

@@ -28,6 +28,7 @@ const LoginSlice = createSlice({
         loading: false,
         isAuthenticated: false,
         token: "",
+        employeeID: null,
         employee: []
     },
     reducers: {
@@ -43,7 +44,7 @@ const LoginSlice = createSlice({
             state.loading = false;
             state.token = action.payload;
             state.employee = jwtDecode(action.payload);
-            console.log(state.employee);
+            state.employeeID = parseInt(state.employee.employeeID);
             state.isAuthenticated = true;
         },
         [checkLoginCredentials.rejected]: (state, action) => {
