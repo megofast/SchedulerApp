@@ -1,19 +1,58 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, OverlayTrigger, Row, Popover } from 'react-bootstrap';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CalendarContextMenu from './CalendarContextMenu';
 import moment from 'moment';
 import { changeCurrentDay, getMonthlyAppointments } from '../Redux/AppointmentSlice';
 import {Variables} from '../Data/Variables';
+import axios from 'axios';
+import EditEvent from '../Components/EditEvent';
 
 
 function CalendarDay(props) {
+    const { currentDay } = useSelector( (state) => state.appointmentReducer);
+    const { token } = useSelector( (state) => state.loginReducer);
     const dispatch = useDispatch();
     const [createMenuIsOpen, setMenuIsOpen] = useState(false);
     const [appSummaryShow, setAppSummaryShow] = useState(false);
     const [X, setX] = useState(0);
     const [Y, setY] = useState(0);
+
+    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+    
+    const [editTarget, setEditTarget] = useState({
+        employeeID: "",
+        clientID: "",
+        appDate: "",
+        startTime: "",
+        endTime: "",
+        notes: "",
+        title: "",
+        color: ""
+    });
+
+    const handleEditClick = (data) => {
+        setEditTarget(data);
+        
+        setEditModalIsOpen(!editModalIsOpen);
+    }
+
+    const handleEditClose = () => {
+        // send as a prop so when the add/edit window is close the state is reset.
+        setEditModalIsOpen(!editModalIsOpen);
+        setEditTarget({
+            employeeID: "",
+            clientID: "",
+            appDate: "",
+            startTime: "",
+            endTime: "",
+            notes: "",
+            title: "",
+            color: ""
+        });
+    }
+
     const handleMenuEvent = () => {
         setMenuIsOpen(!createMenuIsOpen);
     }
@@ -28,20 +67,29 @@ function CalendarDay(props) {
 
     const deleteClick = (id) => {
         if(window.confirm('Are you sure you want to delete this appointment?')) {
-            fetch(Variables.API_URL + 'appointment/' + id, {
-                method: 'DELETE',
+            axios.delete(Variables.API_URL + "appointment/" + id, {
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             })
-            .then(response => response.json())
-            .then((result) => {
-                dispatch(getMonthlyAppointments());
-                alert(result);
-            }, (error) => {
+            .then(response => {
+                // Success
+                let parameters = {
+                    month: currentDay.month(),
+                    year: currentDay.year(),
+                };
+                dispatch(getMonthlyAppointments(parameters));
+                alert(response.data);
+            })
+            .catch(error => {
+                // Failed
                 alert('Failed to delete appointment.');
+                console.log(error);
             });
+
+            
         }
     }
 
@@ -53,7 +101,7 @@ function CalendarDay(props) {
                 {moment(appointment.startTime).format('h:mm a')} - {moment(appointment.endTime).format('h:mm a')} <br />
                     Client: {appointment.clientID} <br />
                     Notes: {appointment.notes} <br />
-                    <button type="button" className="btn mr-1" data-bs-toggle="modal" data-bs-target="#modalOptions">
+                    <button type="button" className="btn mr-1" onClick={ () => handleEditClick(appointment) }>
                         <i className="far fa-edit" aria-hidden="true"></i>
                     </button>
                     <button type="button" className="btn mr-1" onClick={() => deleteClick(appointment.appointmentID)}>
@@ -69,7 +117,7 @@ function CalendarDay(props) {
     }
 
     const dayClicked = (event, info) => {
-        // This conditional block prevents even propogation to the parent
+        // This conditional block prevents event propogation to the parent
         if (event.target.tagName === 'DIV' && event.target.classList.contains('calendar-day') && appSummaryShow === false) {
             dispatch(changeCurrentDay(moment().year(info.year).month(info.month).date(info.number)));
             setX(event.clientX + window.pageXOffset);
@@ -135,7 +183,7 @@ function CalendarDay(props) {
                         <p>{day.number}</p>
                         {day.appointments.map((appointment, i) => {
                             return (
-                            <OverlayTrigger key={i} rootClose='true' trigger="click" placement="auto" onExited={ appClicked } overlay={appointmentPopover(appointment)}>
+                            <OverlayTrigger key={i} rootClose="true" trigger="click" placement="auto" onExited={ appClicked } overlay={appointmentPopover(appointment)}>
                                 <span className="badge cursor-pointer" key={"Badge" + i.toString()} onClick={ appClicked } style={{ backgroundColor: appointment.color }}>{ appointment.title }</span>
                             </OverlayTrigger>
                         )})}
@@ -147,6 +195,7 @@ function CalendarDay(props) {
             
         })}
         { createMenuIsOpen ? <CalendarContextMenu cx={ X } cy={ Y } closeMenu={ handleMenuEvent } /> : null }
+        <EditEvent createModalOpen={editModalIsOpen} handleCreateModalOpen={handleEditClick} data={editTarget} handleEditClose={handleEditClose} />
         </>
     )
 }

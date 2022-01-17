@@ -17,7 +17,7 @@ function DayCell(props) {
     const [createMenuIsOpen, setMenuIsOpen] = useState(false);
     const [X, setX] = useState(0);
     const [Y, setY] = useState(0);
-    const [startId, setStartId] = useState(0);
+    
 
     const handleMenuEvent = () => {
         setMenuIsOpen(!createMenuIsOpen);
@@ -38,7 +38,7 @@ function DayCell(props) {
         }
         event.target.style.backgroundColor = '#e6ffe6';
         setMouseIsDown(true);
-        setStartId(event.target.id);
+        
         dispatch(addSelectedCell(event.target.id));
     }
 

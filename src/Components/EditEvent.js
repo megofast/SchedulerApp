@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Variables} from '../Data/Variables';
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Modal, Button } from 'react-bootstrap';
@@ -7,26 +7,41 @@ import { getMonthlyAppointments, getWeeklyAppointments, getDailyAppointments } f
 import moment from 'moment';
 import axios from 'axios';
 
-
-const NewEvent = (props) => {
+const EditEvent = (props) => {
     const { currentDay } = useSelector( (state) => state.appointmentReducer);
     const { token, employeeID} = useSelector( (state) => state.loginReducer);
-    let currDay = moment(currentDay);       // To prevent changing of the stored state
+    let currDay = moment(currentDay);
     const dispatch = useDispatch();
     
     const [data, setData] = useState({
-        title: "",
-        appointmentID: "",
+        title: props.data.title,
+        appointmentID: props.data.appointmentID,
         employeeID: employeeID,
-        clientID: "",
-        appDate: props.date,
-        startTime: props.start,
-        endTime: props.end,
-        notes: "",
-        color: "#ffffff",
-        fixedStart: props.date + ' ' + props.start,
-        fixedEnd: props.date + ' ' + props.end,
+        clientID: props.data.clientID,
+        appDate: moment(props.data.appDate).format('YYYY-MM-DD'),
+        startTime: moment(props.data.startTime).format('HH:mm'),
+        endTime: moment(props.data.endTime).format('HH:mm'),
+        notes: props.data.notes,
+        color: props.data.color,
+        fixedStart: moment(props.data.appDate).format('YYYY-MM-DD') + ' ' + moment(props.data.startTime).format('HH:mm'),
+        fixedEnd: moment(props.data.appDate).format('YYYY-MM-DD') + ' ' + moment(props.data.endTime).format('HH:mm'),
     });
+
+    useEffect( () => {
+        setData({
+            title: props.data.title,
+            appointmentID: props.data.appointmentID,
+            employeeID: employeeID,
+            clientID: props.data.clientID,
+            appDate: moment(props.data.appDate).format('YYYY-MM-DD'),
+            startTime: moment(props.data.startTime).format('HH:mm'),
+            endTime: moment(props.data.endTime).format('HH:mm'),
+            notes: props.data.notes,
+            color: props.data.color,
+            fixedStart: moment(props.data.appDate).format('YYYY-MM-DD') + ' ' + moment(props.data.startTime).format('HH:mm'),
+            fixedEnd: moment(props.data.appDate).format('YYYY-MM-DD') + ' ' + moment(props.data.endTime).format('HH:mm'),
+        });
+    }, [props.data]);
     
     const updateData = (event) => {
         const name = event.target.name;
@@ -35,27 +50,36 @@ const NewEvent = (props) => {
         setData(values => ({
             ...values,
             [name]: value
-        }))
-
-        if (event.target.name === 'startTime' || event.target.name === 'endTime') {
+        }));
+        
+        if (event.target.name === 'appDate' || event.target.name === 'startTime' || event.target.name === 'endTime') {
             let newDateTime = data.appDate + ' ' + event.target.value;
-            
-            if (event.target.name === 'startTime') {
+            if (event.target.name === 'appDate') {
                 setData(values => ({
                     ...values,
-                    fixedStart: newDateTime
-                }))
+                    fixedStart: event.target.value + ' ' + data.startTime,
+                    fixedEnd: event.target.value + ' ' + data.endTime
+                }));
             } else {
-                setData(values => ({
-                    ...values,
-                    fixedEnd: newDateTime
-                }))
+                if (event.target.name === 'startTime') {
+                    setData(values => ({
+                        ...values,
+                        fixedStart: newDateTime
+                    }));
+                } else {
+                    setData(values => ({
+                        ...values,
+                        fixedEnd: newDateTime
+                    }));
+                }
             }
         }
     }
     
     const createClick = () => {
+        
         const appointmentData = JSON.stringify({
+            appointmentID: data.appointmentID,
             employeeID: data.employeeID,
             clientID: data.clientID,
             appDate: data.appDate,
@@ -66,7 +90,7 @@ const NewEvent = (props) => {
             color: data.color
         });
         
-        axios.post(Variables.API_URL + "appointment", appointmentData, {
+        axios.put(Variables.API_URL + "appointment", appointmentData, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -92,7 +116,7 @@ const NewEvent = (props) => {
             }
             dispatch(getDailyAppointments(parameters));
 
-            props.handleCreateModalOpen();
+            props.handleEditClose();
             alert(response.data);
         })
         .catch(error => {
@@ -105,7 +129,7 @@ const NewEvent = (props) => {
         <>
         <Modal show={props.createModalOpen} onHide={props.handleCreateModalOpen}>
             <Modal.Header closeButton>
-               <Modal.Title>Add New Event</Modal.Title>
+               <Modal.Title>Edit Event</Modal.Title>
             </Modal.Header>
             <Modal.Body>
             <Form>
@@ -141,9 +165,9 @@ const NewEvent = (props) => {
             </Modal.Body>
             <Modal.Footer>
             <Button variant="primary" onClick={createClick}>
-                  Create
+                  Edit
                </Button>
-               <Button variant="secondary" onClick={props.handleCreateModalOpen}>
+               <Button variant="secondary" onClick={props.handleEditClose}>
                   Cancel
                </Button>
             </Modal.Footer>
@@ -152,4 +176,4 @@ const NewEvent = (props) => {
     );
   }
   
-  export default NewEvent;
+  export default EditEvent;

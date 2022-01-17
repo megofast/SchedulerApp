@@ -8,7 +8,7 @@ import moment from 'moment';
 
 const AppointmentsList = (props) => {
     const { monthAppointments, loading, currentDay } = useSelector( (state) => state.appointmentReducer);
-    const { token, employeeID} = useSelector( (state) => state.loginReducer);
+    const { token } = useSelector( (state) => state.loginReducer);
     const dispatch = useDispatch();
 
     useEffect( () => {

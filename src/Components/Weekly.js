@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, ListGroup, Badge } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { getWeeklyAppointments, changeCurrentDay, moveToNextWeek, moveToPreviousWeek } from '../Redux/AppointmentSlice';
+import { getWeeklyAppointments, moveToNextWeek, moveToPreviousWeek } from '../Redux/AppointmentSlice';
 import WeeklyCell from './WeeklyCell';
 import moment from 'moment';
 

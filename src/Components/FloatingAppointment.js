@@ -1,6 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+import { useDispatch, useSelector } from "react-redux";
+import { getWeeklyAppointments, getDailyAppointments } from '../Redux/AppointmentSlice';
+import {Variables} from '../Data/Variables';
 import moment from 'moment';
+import axios from 'axios';
+import EditEvent from '../Components/EditEvent';
+
 
 function translateTimeToPositionId(time, daily) {
     let timeMoment = moment(time);
@@ -38,12 +45,51 @@ function getAdjustedPosition(time) {
 }
 
 function FloatingAppointment(props) {
+    const { currentDay } = useSelector( (state) => state.appointmentReducer);
+    const { token } = useSelector( (state) => state.loginReducer);
+    const [appSummaryShow, setAppSummaryShow] = useState(false);
+    const dispatch = useDispatch();
     let position = {
         left: 0,
         top: 0,
         width: 0,
         height: 0,
         bottom: 0,
+    }
+
+    // All Data for the edit button
+    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+    
+    const [editTarget, setEditTarget] = useState({
+        employeeID: "",
+        clientID: "",
+        appDate: "",
+        startTime: "",
+        endTime: "",
+        notes: "",
+        title: "",
+        color: ""
+    });
+
+    const handleEditClick = (data) => {
+        setEditTarget(data);
+        
+        setEditModalIsOpen(!editModalIsOpen);
+    }
+
+    const handleEditClose = () => {
+        // send as a prop so when the add/edit window is close the state is reset.
+        setEditModalIsOpen(!editModalIsOpen);
+        setEditTarget({
+            employeeID: "",
+            clientID: "",
+            appDate: "",
+            startTime: "",
+            endTime: "",
+            notes: "",
+            title: "",
+            color: ""
+        });
     }
 
     if (props.references.current[translateTimeToPositionId(props.data.startTime, props.daily)] !== undefined) {
@@ -71,8 +117,6 @@ function FloatingAppointment(props) {
         position.bottom = props.references.current[translateTimeToPositionId(props.data.endTime, props.daily)].getBoundingClientRect().top;
     }
 
-    
-
     useEffect( () => {
         function handleResize() {
             //console.log(document.getElementById('0-0').getBoundingClientRect());
@@ -81,8 +125,66 @@ function FloatingAppointment(props) {
         window.addEventListener('resize', handleResize)
     });
 
+    const appClicked = (event) => {
+        setAppSummaryShow(!appSummaryShow);
+    }
+
+    const deleteClick = (id) => {
+        if(window.confirm('Are you sure you want to delete this appointment?')) {
+            axios.delete(Variables.API_URL + "appointment/" + id, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                // Success
+                let parameters = {
+                    month: currentDay.month(),
+                    year: currentDay.year(),
+                };
+                dispatch(getWeeklyAppointments(parameters));
+
+                parameters = {
+                    date: currentDay.format('YYYY-MM-DD'),
+                }
+                dispatch(getDailyAppointments(parameters));
+                alert(response.data);
+            })
+            .catch(error => {
+                // Failed
+                alert('Failed to delete appointment.');
+                console.log(error);
+            });
+
+            
+        }
+    }
+
+    const appointmentPopover = (appointment) => {
+        return (
+            <Popover id="popover-appointment">
+                <Popover.Header as="h3">{appointment.title}</Popover.Header>
+                <Popover.Body>
+                {moment(appointment.startTime).format('h:mm a')} - {moment(appointment.endTime).format('h:mm a')} <br />
+                    Client: {appointment.clientID} <br />
+                    Notes: {appointment.notes} <br />
+                    <button type="button" className="btn mr-1" onClick={ () => handleEditClick(appointment) }>
+                        <i className="far fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" className="btn mr-1" onClick={() => deleteClick(appointment.appointmentID)}>
+                        <i className="far fa-trash-alt"></i>
+                    </button>
+                </Popover.Body>
+            </Popover>
+        )
+    }
+
     return (
-        <div className='layer' style={{ backgroundColor: props.data.color, 
+        <>
+        <OverlayTrigger rootClose='true' trigger="click" placement="auto" onExited={ appClicked } overlay={appointmentPopover(props.data)}>
+        <div className='layer cursor-pointer' style={{ backgroundColor: props.data.color, 
             borderColor: props.data.color,
             left: position.left,
             top: position.top,
@@ -105,6 +207,9 @@ function FloatingAppointment(props) {
             </p>
             }
         </div>
+        </OverlayTrigger>
+        <EditEvent createModalOpen={editModalIsOpen} handleCreateModalOpen={handleEditClick} data={editTarget} handleEditClose={handleEditClose} />
+        </>
     )
 }
 

@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {Variables} from '../Data/Variables';
+import { refreshAccessToken } from '../Redux/LoginSlice';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -8,7 +9,7 @@ export const getAppointments = createAsyncThunk("appointments/getAppointment", a
 });
 
 export const getMonthlyAppointments = createAsyncThunk(
-    "appointments/getMonthlyAppointments", async (parameters, {getState}) => {
+    "appointments/getMonthlyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
     return axios
     .get(Variables.API_URL + `appointment/month/${state.loginReducer.employeeID}/${parameters.month}/${parameters.year}`, {
@@ -17,11 +18,21 @@ export const getMonthlyAppointments = createAsyncThunk(
         }
     })
     .then((response) => response.data)
-    .catch((error) => error)
+    .catch((error) => {
+        if (error.response.status === 401) {
+            // 401 not authorized, invoke the refresh token process
+            let parameters = {
+                accessToken: state.loginReducer.token,
+                refreshToken: state.loginReducer.refreshToken,
+            }
+            dispatch(refreshAccessToken(parameters));
+        }
+        return error;
+    })
 });
 
 export const getWeeklyAppointments = createAsyncThunk(
-    "appointments/getWeeklyAppointments", async (parameters, {getState}) => {
+    "appointments/getWeeklyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
     return axios
     .get(Variables.API_URL + `appointment/week/${state.loginReducer.employeeID}/${parameters.startDate}/${parameters.endDate}`,{
@@ -30,11 +41,20 @@ export const getWeeklyAppointments = createAsyncThunk(
         }
     })
     .then((response) => response.data)
-    .catch((error) => error)
+    .catch((error) => {
+        if (error.response.status === 401) {
+            // 401 not authorized, invoke the refresh token process
+            let parameters = {
+                accessToken: state.loginReducer.token,
+                refreshToken: state.loginReducer.refreshToken,
+            }
+            dispatch(refreshAccessToken(parameters));
+        }
+    })
 });
 
 export const getDailyAppointments = createAsyncThunk(
-    "appointments/getDailyAppointments", async (parameters, {getState}) => {
+    "appointments/getDailyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
     return axios
     .get(Variables.API_URL + `appointment/day/${state.loginReducer.employeeID}/${parameters.date}`, {
@@ -43,20 +63,18 @@ export const getDailyAppointments = createAsyncThunk(
         }
     })
     .then((response) => response.data)
-    .catch((error) => error)
+    .catch((error) => {
+        if (error.response.status === 401) {
+            // 401 not authorized, invoke the refresh token process
+            let parameters = {
+                accessToken: state.loginReducer.token,
+                refreshToken: state.loginReducer.refreshToken,
+            }
+            dispatch(refreshAccessToken(parameters));
+        }
+    })
 });
 
-const getCurrentMonthAppointments = (appointments, currentMonth) => {
-    let tempAppointments = [];
-    appointments.forEach( (appointment) => {
-        let appointmentMonth = moment(appointment.appDate);
-        if (appointmentMonth.month() === currentMonth) {
-            tempAppointments.push(appointment);
-        }
-    });
-
-    return tempAppointments;
-}
 
 const AppointmentSlice = createSlice({
     name: "appointments",
@@ -134,17 +152,6 @@ const AppointmentSlice = createSlice({
         },
     },
     extraReducers: {
-        [getAppointments.pending]: (state, action) => {
-            state.loading = true;
-        },
-        [getAppointments.fulfilled]: (state, action) => {
-            state.loading = false;
-            state.appointments = action.payload;
-            //state.monthAppointments = getCurrentMonthAppointments(action.payload, state.currentMonth);
-        },
-        [getAppointments.rejected]: (state, action) => {
-            state.loading = false;   
-        },
         [getMonthlyAppointments.pending]: (state, action) => {
             state.loading = true;
         },

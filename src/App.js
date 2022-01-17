@@ -8,6 +8,7 @@ import Weekly from './Components/Weekly';
 import Daily from './Components/Daily';
 import AppointmentsList from './Components/AppointmentsList';
 import MainLayout from './Components/MainLayout';
+import People from './Components/People';
 import { useSelector } from "react-redux";
 
 function RequireAuthorization( { children } ) {
@@ -29,6 +30,7 @@ function App() {
               <Route path='/Calendar/Week' element={ <RequireAuthorization> <Weekly /> </RequireAuthorization> } />
               <Route path='/Calendar/Day' element={ <RequireAuthorization> <Daily /> </RequireAuthorization> } />
               <Route path='Appointments' element={ <RequireAuthorization> <AppointmentsList /> </RequireAuthorization> } />
+              <Route path='People' element={ <RequireAuthorization> <People /> </RequireAuthorization> } />
             </Route>
           </Routes>
 

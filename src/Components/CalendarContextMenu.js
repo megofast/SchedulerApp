@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Variables} from '../Data/Variables';
 import { ListGroup } from 'react-bootstrap';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';

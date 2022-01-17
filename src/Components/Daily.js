@@ -6,7 +6,6 @@ import {Link} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import DayCell from './DayCell';
 import { getDailyAppointments, moveToNextDay, moveToPreviousDay } from '../Redux/AppointmentSlice';
-import moment from 'moment';
 
 
 function Daily(props) {
