@@ -4,10 +4,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Col, Row, Card, Form, FloatingLabel, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import { checkLoginCredentials } from '../Redux/LoginSlice';
+import Register from './Register';
 
 
 function App() {
     const { isAuthenticated, loading, failedAttempt } = useSelector( (state) => state.loginReducer);
+    const [registerModalIsOpen, setRegisterModalIsOpen] = useState(false);
+    
+    const handleRegisterModalEvent = () => {
+        setRegisterModalIsOpen(!registerModalIsOpen);
+    }
     const [data, setData] = useState({
         username: "",
         password: "",
@@ -50,7 +56,8 @@ function App() {
     }, [isAuthenticated, navigate, failedAttempt])
 
     return (
-      <Container fluid className="mx-0 px-0">
+        <>
+        <Container fluid className="mx-0 px-0">
         <Row>
             <Col></Col>
             <Col>
@@ -70,11 +77,11 @@ function App() {
                             </Form.Group>
                             <div className="d-grid gap-2">
                             <Button variant="primary" className="text-uppercase fw-bold btn-block" onClick={loginButtonClicked}>
-                                { loading ? <i className="fa fa-spinner fa-spin"></i> : `Sign In` }
+                                { loading ? <i className="fa fa-spinner fa-spin"></i> : <i class="fas fa-sign-in-alt">&nbsp;&nbsp;Sign-In</i> }
                                 
                             </Button>
                             <hr className="my-4"></hr>
-                            <Button variant="primary" className="text-uppercase fw-bold btn-block">Register</Button>
+                            <Button variant="primary" className="text-uppercase fw-bold btn-block" onClick={handleRegisterModalEvent}><i className="fas fa-user-plus"></i>&nbsp;&nbsp;Register</Button>
                             </div>
                         </Form>
                     </Card.Body>
@@ -82,7 +89,9 @@ function App() {
             </Col>
             <Col></Col>
         </Row>
-      </Container>
+        </Container>
+        <Register registerModalOpen={registerModalIsOpen} handleRegisterModalOpen={handleRegisterModalEvent} />
+        </>
     );
 }
 

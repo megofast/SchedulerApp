@@ -15,7 +15,7 @@ const Header = () => {
         <Navbar fixed="top" bg="white" variant="light" className="shadow mx-0 px-0">
             <Container fluid>
                 <Navbar.Brand href="#home">Scheduler</Navbar.Brand>
-                <Form className="d-flex">
+                <Form className="d-flex me-auto">
                     <FormControl
                     type="search"
                     placeholder="Search"

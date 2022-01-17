@@ -39,7 +39,7 @@ const NewEvent = (props) => {
 
         if (event.target.name === 'startTime' || event.target.name === 'endTime') {
             let newDateTime = data.appDate + ' ' + event.target.value;
-            
+            console.log(event.target.value);
             if (event.target.name === 'startTime') {
                 setData(values => ({
                     ...values,
