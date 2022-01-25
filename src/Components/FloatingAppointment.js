@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import { getWeeklyAppointments, getDailyAppointments } from '../Redux/AppointmentSlice';

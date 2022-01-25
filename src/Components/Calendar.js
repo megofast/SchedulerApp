@@ -4,7 +4,7 @@ import '../CSS/Calendar.css'
 import { useDispatch, useSelector } from "react-redux";
 import {Link} from 'react-router-dom';
 import { Container, Row, Col, Button, ListGroup } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import CalendarDay from './CalendarDay';
 import { moveCalendarToNextMonth, moveCalendarToPreviousMonth, getMonthlyAppointments } from '../Redux/AppointmentSlice'
 

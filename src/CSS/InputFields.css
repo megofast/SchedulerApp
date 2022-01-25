@@ -1,0 +1,22 @@
+.input_wrapper {
+    position: relative;
+    
+}
+
+.input_wrapper input {
+    height: 40px;
+    text-indent: 25px;
+    border: 2px solid #d6d4d4;
+}
+
+.input_wrapper input:focus {
+    box-shadow: none;
+    border: 2px solid blue;
+}
+
+.input_icon {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    
+}

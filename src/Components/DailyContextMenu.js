@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import {Variables} from '../Data/Variables';
 import { ListGroup } from 'react-bootstrap';
 import { useSelector } from "react-redux";

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Outlet} from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Col, Row } from 'react-bootstrap';
 import Header from '../Layout/Header';
 import Sidebar from '../Layout/Sidebar';

@@ -23,13 +23,13 @@ export const checkLoginCredentials = createAsyncThunk(
 
 export const refreshAccessToken = createAsyncThunk(
     "login/refreshAccessToken", async ( parameters ) => {
-        console.log("refresh initiated");
+        
     // Create the Json payload from the username and password
     let tokenInformation = JSON.stringify({
         accessToken: parameters.accessToken,
         refreshToken: parameters.refreshToken,
     });
-    console.log(tokenInformation);
+    
     return axios
     .post(Variables.API_URL + "login/refreshtoken", tokenInformation, {
         headers: {

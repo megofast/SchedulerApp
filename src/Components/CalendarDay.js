@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, OverlayTrigger, Row, Popover } from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import CalendarContextMenu from './CalendarContextMenu';

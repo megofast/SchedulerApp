@@ -1,14 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Variables} from '../Data/Variables';
-import { useDispatch, useSelector } from "react-redux";
-import { Form, Modal, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../CSS/InputFields.css';
+import { Form, Modal, Button, InputGroup } from 'react-bootstrap';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
 const Register = (props) => {
-    
-    const { token } = useSelector( (state) => state.loginReducer);
-    const dispatch = useDispatch();
     
     const [data, setData] = useState({
         username: "",
@@ -48,12 +45,10 @@ const Register = (props) => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
                 }
             })
             .then(response => {
                 // Success
-                //dispatch(getClientList());
                 
                 props.handleRegisterModalOpen();
                 alert(response.data);
@@ -73,30 +68,30 @@ const Register = (props) => {
             </Modal.Header>
             <Modal.Body>
             <Form>
-                <Form.Group className="mb-3" controlId="formUsername">
-                      <Form.Label>Username</Form.Label>
-                      <Form.Control name="username" type="string" placeholder="Username" value={data.username} onChange={updateData}/>
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formPassword">
-                      <Form.Label>Password</Form.Label>
-                      <Form.Control name="password" type="password" placeholder="Password" value={data.password} onChange={updateData}/>
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formFirstName">
-                      <Form.Label>First Name</Form.Label>
-                      <Form.Control name="firstName" type="string" placeholder="First Name" value={data.firstName} onChange={updateData}/>
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formLastName">
-                      <Form.Label>Last Name</Form.Label>
-                      <Form.Control name="lastName" type="string" placeholder="Last Name" value={data.lastName} onChange={updateData}/>
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formPhone">
-                      <Form.Label>Phone Number</Form.Label>
-                      <Form.Control name="phone" type="phone" placeholder="Phone" value={data.phone} onChange={updateData}/>
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formEmail">
-                      <Form.Label>Email</Form.Label>
-                      <Form.Control name="email" type="email" placeholder="Email" value={data.email} onChange={updateData}/>
-                  </Form.Group>
+                <div className="mb-3 input_wrapper">
+                    <i className="fas fa-user input_icon"></i>
+                    <Form.Control name="username" type="string" placeholder="Username" value={data.username} onChange={updateData}/>
+                </div>
+                  <div className="mb-3 input_wrapper">
+                    <i className="fas fa-key input_icon"></i>
+                        <Form.Control name="password" type="password" placeholder="Password" value={data.password} onChange={updateData}/>
+                  </div>
+                  <div className="mb-3 input_wrapper">
+                        <i className="far fa-address-card input_icon"></i>
+                        <Form.Control name="firstName" type="string" placeholder="First Name" value={data.firstName} onChange={updateData}/>
+                  </div>
+                  <div className="mb-3 input_wrapper">
+                        <i className="far fa-address-card input_icon"></i>
+                        <Form.Control name="lastName" type="string" placeholder="Last Name" value={data.lastName} onChange={updateData}/>
+                  </div>
+                  <div className="mb-3 input_wrapper">
+                        <i className="fas fa-phone input_icon"></i>
+                        <Form.Control name="phone" type="phone" placeholder="Phone" value={data.phone} onChange={updateData}/>
+                  </div>
+                  <div className="mb-3 input_wrapper">
+                        <i className="fas fa-envelope input_icon"></i>
+                        <Form.Control name="email" type="email" placeholder="Email" value={data.email} onChange={updateData}/>
+                  </div>
               </Form>
             </Modal.Body>
             <Modal.Footer>

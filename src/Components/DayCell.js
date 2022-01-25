@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import '../CSS/Weekly.css'
 import { Col, Container, Row} from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";

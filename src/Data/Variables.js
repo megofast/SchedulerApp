@@ -1,5 +1,5 @@
 export const Variables = {
-    API_URL: "https://localhost:44307/api/",
+    API_URL: "https://api.skisoftwaresolutions.com/api/",
     WEEKDAYSSHORT: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     WEEKDAYSLONG: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     MONTHSSHORT: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {Variables} from '../Data/Variables';
 import '../CSS/Weekly.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import { Col, Container, Row, Button, ListGroup, Badge } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";

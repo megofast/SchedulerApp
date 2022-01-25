@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import {Routes, Route, Navigate} from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './CSS/bootstrap.min.css';
 import Login from './Components/Login';
 import Calendar from './Components/Calendar';
 import Weekly from './Components/Weekly';
@@ -22,6 +22,7 @@ function RequireAuthorization( { children } ) {
 
 function App() {
   return (
+        <>
 
           <Routes>
             <Route path='/Login' element={ <Login /> } />
@@ -33,7 +34,7 @@ function App() {
               <Route path='People' element={ <RequireAuthorization> <People /> </RequireAuthorization> } />
             </Route>
           </Routes>
-
+        </>
   );
 }
 

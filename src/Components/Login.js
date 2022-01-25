@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Col, Row, Card, Form, FloatingLabel, Button } from 'react-bootstrap';
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container, Col, Row, Card, Form, FloatingLabel, Button} from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import { checkLoginCredentials } from '../Redux/LoginSlice';
 import Register from './Register';
@@ -77,7 +77,7 @@ function App() {
                             </Form.Group>
                             <div className="d-grid gap-2">
                             <Button variant="primary" className="text-uppercase fw-bold btn-block" onClick={loginButtonClicked}>
-                                { loading ? <i className="fa fa-spinner fa-spin"></i> : <i class="fas fa-sign-in-alt">&nbsp;&nbsp;Sign-In</i> }
+                                { loading ? <i className="fa fa-spinner fa-spin"></i> : <i className="fas fa-sign-in-alt">&nbsp;&nbsp;Sign-In</i> }
                                 
                             </Button>
                             <hr className="my-4"></hr>

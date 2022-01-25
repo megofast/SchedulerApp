@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Variables} from '../Data/Variables';
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Modal, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import { getClientList } from '../Redux/ClientSlice';
 import axios from 'axios';
 

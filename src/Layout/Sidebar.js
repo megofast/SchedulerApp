@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Nav, ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import NewEvent from '../Components/NewEvent';
 
 const Sidebar = () => {
