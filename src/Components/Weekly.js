@@ -24,6 +24,7 @@ function Weekly(props) {
         }
 
         dispatch(getWeeklyAppointments(parameters));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, currentDay])
     
     return (

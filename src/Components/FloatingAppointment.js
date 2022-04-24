@@ -14,6 +14,8 @@ function translateTimeToPositionId(time, daily) {
     let hour = timeMoment.hour();
     let minute = timeMoment.minute();
     let day = timeMoment.day();
+    // Adjust hour based on the modified start time of the timeline, since midnight was 0, 8am would be -8 hours.
+    hour = hour - Variables.STARTTIMEINT;
     let gridHour = (hour * 2);
     if (minute >= 30) {
         gridHour = gridHour + 1;

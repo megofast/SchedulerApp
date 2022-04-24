@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Variables} from '../Data/Variables';
 import '../CSS/InputFields.css';
-import { Form, Modal, Button, InputGroup } from 'react-bootstrap';
+import { Form, Modal, Button } from 'react-bootstrap';
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 

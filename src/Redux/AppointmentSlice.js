@@ -1,8 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {Variables} from '../Data/Variables';
-import { refreshAccessToken } from '../Redux/LoginSlice';
-import axios from 'axios';
 import moment from 'moment';
+import axiosInstance from "../Data/axiosInstance";
+
+
+
+// Create a sort function to place the appointments in ascending order based on start times.
+function sortByStartTimes(a, b) {
+    if (moment(a.startTime).isBefore(moment(b.startTime))) {
+        // Then a is before b, thus return a negative number
+        return -1;
+    } else {
+        return 1;
+    }
+}
 
 export const getAppointments = createAsyncThunk("appointments/getAppointment", async () => {
     return fetch(Variables.API_URL + "appointment").then(res => res.json());
@@ -11,68 +22,37 @@ export const getAppointments = createAsyncThunk("appointments/getAppointment", a
 export const getMonthlyAppointments = createAsyncThunk(
     "appointments/getMonthlyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
-    return axios
-    .get(Variables.API_URL + `appointment/month/${state.loginReducer.employeeID}/${parameters.month}/${parameters.year}`, {
-        headers: {
-            Authorization: `Bearer ${state.loginReducer.token}`
-        }
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-        if (error.response.status === 401) {
-            // 401 not authorized, invoke the refresh token process
-            let parameters = {
-                accessToken: state.loginReducer.token,
-                refreshToken: state.loginReducer.refreshToken,
-            }
-            dispatch(refreshAccessToken(parameters));
-        }
-        return error;
-    })
+
+    return axiosInstance.get(`appointment/month/${state.loginReducer.employeeID}/${parameters.month}/${parameters.year}`)
+        .then( (response) => response.data)
+        .catch( (error) => {
+            console.log(error);
+            return error;
+        });
 });
 
 export const getWeeklyAppointments = createAsyncThunk(
     "appointments/getWeeklyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
-    return axios
-    .get(Variables.API_URL + `appointment/week/${state.loginReducer.employeeID}/${parameters.startDate}/${parameters.endDate}`,{
-        headers: {
-            Authorization: `Bearer ${state.loginReducer.token}`
-        }
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-        if (error.response.status === 401) {
-            // 401 not authorized, invoke the refresh token process
-            let parameters = {
-                accessToken: state.loginReducer.token,
-                refreshToken: state.loginReducer.refreshToken,
-            }
-            dispatch(refreshAccessToken(parameters));
-        }
-    })
+
+    return axiosInstance.get(`appointment/week/${state.loginReducer.employeeID}/${parameters.startDate}/${parameters.endDate}`)
+        .then( (response) => response.data)
+        .catch( (error) => {
+            console.log(error);
+            return error;
+        });
 });
 
 export const getDailyAppointments = createAsyncThunk(
     "appointments/getDailyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
-    return axios
-    .get(Variables.API_URL + `appointment/day/${state.loginReducer.employeeID}/${parameters.date}`, {
-        headers: {
-            Authorization: `Bearer ${state.loginReducer.token}`
-        }
-    })
-    .then((response) => response.data)
-    .catch((error) => {
-        if (error.response.status === 401) {
-            // 401 not authorized, invoke the refresh token process
-            let parameters = {
-                accessToken: state.loginReducer.token,
-                refreshToken: state.loginReducer.refreshToken,
-            }
-            dispatch(refreshAccessToken(parameters));
-        }
-    })
+
+    return axiosInstance.get(`appointment/day/${state.loginReducer.employeeID}/${parameters.date}`)
+        .then( (response) => response.data)
+        .catch( (error) => {
+            console.log(error);
+            return error;
+        });
 });
 
 
@@ -131,22 +111,24 @@ const AppointmentSlice = createSlice({
             state.currentDay = oldDay;
         },
         moveCalendarToNextMonth: (state) => {
+            let newDay = moment(state.currentDay);
             if (state.currentDay.month() === 11) {
-                state.currentDay.year(state.currentDay.year() + 1).month(0).date(1);
+                newDay.year(newDay.year() + 1).month(0).date(1);
             } else {
-                state.currentDay.month(state.currentDay.month() + 1).date(1);
+                newDay.month(newDay.month() + 1).date(1);
             }
-
+            state.currentDay = moment(newDay);
             state.currentMonth = state.currentDay.month();
             //state.monthAppointments = getCurrentMonthAppointments(state.appointments, state.currentMonth);
         },
         moveCalendarToPreviousMonth: (state) => {
+            let newDay = moment(state.currentDay);
             if (state.currentDay.month() === 0) {
-                state.currentDay.year(state.currentDay.year() - 1).month(11).date(1);
+                newDay.year(newDay.year() - 1).month(11).date(1);
             } else {
-                state.currentDay.month(state.currentDay.month() - 1).date(1);
+                newDay.month(newDay.month() - 1).date(1);
             }
-
+            state.currentDay = moment(newDay);
             state.currentMonth = state.currentDay.month();
             //state.monthAppointments = getCurrentMonthAppointments(state.appointments, state.currentMonth);
         },
@@ -158,6 +140,9 @@ const AppointmentSlice = createSlice({
         [getMonthlyAppointments.fulfilled]: (state, action) => {
             state.loading = false;
             state.monthAppointments = action.payload;
+            if (state.monthAppointments !== undefined) {
+                //state.monthAppointments = state.monthAppointments.sort(sortByStartTimes);
+            }
         },
         [getMonthlyAppointments.rejected]: (state, action) => {
             state.loading = false;
@@ -168,6 +153,9 @@ const AppointmentSlice = createSlice({
         [getWeeklyAppointments.fulfilled]: (state, action) => {
             state.loading = false;
             state.weeklyAppointments = action.payload;
+            if (state.weeklyAppointments !== undefined) {
+                //state.weeklyAppointments = state.weeklyAppointments.sort(sortByStartTimes);
+            }
         },
         [getWeeklyAppointments.rejected]: (state, action) => {
             state.loading = false;
@@ -178,6 +166,9 @@ const AppointmentSlice = createSlice({
         [getDailyAppointments.fulfilled]: (state, action) => {
             state.loading = false;
             state.dailyAppointments = action.payload;
+            if (state.dailyAppointments !== undefined) {
+                //state.dailyAppointments = state.dailyAppointments.sort(sortByStartTimes);
+            }
         },
         [getDailyAppointments.rejected]: (state, action) => {
             state.loading = false;

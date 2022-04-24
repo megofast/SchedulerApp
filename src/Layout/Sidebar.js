@@ -6,7 +6,7 @@ import NewEvent from '../Components/NewEvent';
 
 const Sidebar = () => {
     const [createModalIsOpen, setModalIsOpen] = useState(false);
-    const [active, setActive] = useState('home');
+    const [active, setActive] = useState('dashboard');
 
     const handleCreateModalEvent = () => {
         setModalIsOpen(!createModalIsOpen);
@@ -17,7 +17,7 @@ const Sidebar = () => {
         <Nav className="sidebar d-lg-block mx-0 px-0">
             <div className="mx-3 mt-4">
                 <ListGroup variant="flush" activeKey={active} onSelect={(selectedKey) => setActive(selectedKey)}>
-                    <ListGroup.Item action eventKey='home'><i className="fas fa-home fa-fw me-3"></i>Main Dashboard</ListGroup.Item>
+                    <ListGroup.Item action eventKey='dashboard' as={Link} to='/'><i className="fas fa-home fa-fw me-3"></i>Main Dashboard</ListGroup.Item>
                     <ListGroup.Item action eventKey='calendar' as={Link} to='/Calendar' ><i className="fas fa-calendar fa-fw me-3"></i>Calendar View</ListGroup.Item>
                     <ListGroup.Item action eventKey='appointments' as={Link} to='/Appointments'><i className="fas fa-list fa-fw me-3"></i>List View</ListGroup.Item>
                     <ListGroup.Item action eventKey='create' onClick={handleCreateModalEvent}><i className="fas fa-plus-square fa-fw me-3"></i>Add Event</ListGroup.Item>

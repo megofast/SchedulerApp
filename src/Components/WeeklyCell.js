@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FloatingAppointment from './FloatingAppointment';
 import WeeklyContextMenu from './weeklyContextMenu';
 import { addSelectedCell, resetSelectedCells, removeLastSelectedCell } from '../Redux/AppointmentSlice';
+import { Variables } from '../Data/Variables';
 
 
 function WeeklyCell(props) {
@@ -71,13 +72,13 @@ function WeeklyCell(props) {
 
 
     // 2 dimensional array, first dimension is hour row and the 2nd is the column of days in the week
-    for (let x = 0; x < 48; x++) {
+    for (let x = 0; x < Variables.TIMES.length; x++) {
         weeklySchedule.push([]);
     }
     
     // Change 48 for dynamic time mapping. When the user sets options for less hours on the scheduler
     // Make the grid in the background, assigning IDs to each column to use for position of appointment layer
-    for (let hour = 0; hour < 48; hour++) {
+    for (let hour = 0; hour < Variables.TIMES.length; hour++) {
 
         for (let day = 0; day < 7; day++) {
             let hourlySchedule = {

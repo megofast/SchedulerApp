@@ -21,22 +21,6 @@ export const checkLoginCredentials = createAsyncThunk(
     .then(response => response.data)
 });
 
-export const refreshAccessToken = createAsyncThunk(
-    "login/refreshAccessToken", async ( parameters ) => {
-        
-    // Create the Json payload from the username and password
-    let tokenInformation = JSON.stringify({
-        accessToken: parameters.accessToken,
-        refreshToken: parameters.refreshToken,
-    });
-    
-    return axios
-    .post(Variables.API_URL + "login/refreshtoken", tokenInformation, {
-        headers: {
-            'Content-Type': 'application/json'
-        }})
-    .then(response => response.data)
-});
 
 const LoginSlice = createSlice({
     name: "authenticatedUser",
@@ -46,6 +30,7 @@ const LoginSlice = createSlice({
         isAuthenticated: false,
         token: "",
         refreshToken: "",
+        refreshing: false,
         employeeID: null,
         employee: []
     },
@@ -56,6 +41,13 @@ const LoginSlice = createSlice({
             state.employeeID = null;
             state.isAuthenticated = false;
         },
+        updateFromRefreshToken: (state, action) => {
+            state.token = action.payload.data.accessToken;
+            state.refreshToken = action.payload.data.refreshToken;
+            state.employee = jwtDecode(action.payload.data.accessToken);
+            state.employeeID = parseInt(state.employee.employeeID);
+            state.isAuthenticated = true;
+        }
     },
     extraReducers: {
         [checkLoginCredentials.pending]: (state, action) => {
@@ -75,27 +67,9 @@ const LoginSlice = createSlice({
             state.loading = false;
             state.isAuthenticated = false;   
         },
-        [refreshAccessToken.pending]: (state, action) => {
-            state.loading = true;
-        },
-        [refreshAccessToken.fulfilled]: (state, action) => {
-            state.failedAttempt = false;
-            state.loading = false;
-            console.log(action.payload);
-            state.token = action.payload.accessToken;
-            state.refreshToken = action.payload.refreshToken;
-            state.employee = jwtDecode(action.payload.accessToken);
-            state.employeeID = parseInt(state.employee.employeeID);
-            state.isAuthenticated = true;
-        },
-        [refreshAccessToken.rejected]: (state, action) => {
-            state.failedAttempt = true;
-            state.loading = false;
-            state.isAuthenticated = false;   
-        },
     },
 });
 
-export const { logout } = LoginSlice.actions;
+export const { logout, updateFromRefreshToken } = LoginSlice.actions;
 
 export default LoginSlice.reducer;

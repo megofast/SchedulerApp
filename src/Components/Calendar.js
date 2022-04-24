@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Variables} from '../Data/Variables'
+import {Variables} from '../Data/Variables';
 import '../CSS/Calendar.css'
 import { useDispatch, useSelector } from "react-redux";
 import {Link} from 'react-router-dom';

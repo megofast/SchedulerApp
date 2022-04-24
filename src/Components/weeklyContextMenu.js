@@ -41,9 +41,9 @@ function WeeklyContextMenu(props) {
     const navigate = useNavigate();
     const [createModalIsOpen, setModalIsOpen] = useState(false);
     const currDate = moment(currentDay);        // Create temporary date to keep state mutation from occuring by using currentDate
-    const [startTime, setStartTime] = useState(translatePositionIdToTime(selectedCells[0], false));
-    const [endTime, setEndTime] = useState(translatePositionIdToTime(selectedCells[selectedCells.length - 1], true));
-    const [date, setDate] = useState(currDate.day(getDay(selectedCells[0])).format('YYYY-MM-DD'));
+    const startTime = translatePositionIdToTime(selectedCells[0], false);
+    const endTime = translatePositionIdToTime(selectedCells[selectedCells.length - 1], true);
+    const date = currDate.day(getDay(selectedCells[0])).format('YYYY-MM-DD');
 
     useEffect( () => {
         

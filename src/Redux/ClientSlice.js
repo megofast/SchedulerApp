@@ -1,19 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {Variables} from '../Data/Variables';
 import axios from 'axios';
+import axiosInstance from "../Data/axiosInstance";
 
 
 export const getClientList = createAsyncThunk(
     "clients/getClientList", async (_, {getState} ) => {
     const state = getState();       // Get the state so the login token can be used
-    return axios
-    .get(Variables.API_URL + "client",{
-        headers: {
-            Authorization: `Bearer ${state.loginReducer.token}`
-        }
-    })
-    .then((response) => response.data)
-    .catch((error) => error)
+    return axiosInstance.get('client')
+        .then( (response) => response.data)
+        .catch( (error) => {
+            console.log(error);
+            return error;
+        });
+
 });
 
 

@@ -14,7 +14,7 @@ function CalendarContextMenu(props) {
     const navigate = useNavigate();
     const [createModalIsOpen, setModalIsOpen] = useState(false);
     const currDate = moment(currentDay);        // Create temporary date to keep state mutation from occuring by using currentDate
-    const [date, setDate] = useState(currDate.format('YYYY-MM-DD'));
+    const date = currDate.format('YYYY-MM-DD');
 
     const handleCreateModalEvent = () => {
         setModalIsOpen(!createModalIsOpen);

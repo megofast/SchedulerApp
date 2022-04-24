@@ -41,7 +41,7 @@ const EditEvent = (props) => {
             fixedStart: moment(props.data.appDate).format('YYYY-MM-DD') + ' ' + moment(props.data.startTime).format('HH:mm'),
             fixedEnd: moment(props.data.appDate).format('YYYY-MM-DD') + ' ' + moment(props.data.endTime).format('HH:mm'),
         });
-    }, [props.data]);
+    }, [props.data, employeeID]);
     
     const updateData = (event) => {
         const name = event.target.name;

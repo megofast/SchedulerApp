@@ -8,7 +8,7 @@ import moment from 'moment';
 
 const AppointmentsList = (props) => {
     const { monthAppointments, loading, currentDay } = useSelector( (state) => state.appointmentReducer);
-    const { token } = useSelector( (state) => state.loginReducer);
+    const { token, refreshing } = useSelector( (state) => state.loginReducer);
     const dispatch = useDispatch();
 
     useEffect( () => {
@@ -47,7 +47,7 @@ const AppointmentsList = (props) => {
         }
     }
 
-    if (loading) {
+    if (loading || refreshing) {
         return (
             <div><i className="fa fa-spinner fa-spin"></i></div>
         )

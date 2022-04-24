@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FloatingAppointment from './FloatingAppointment';
 import DailyContextMenu from './DailyContextMenu';
 import { addSelectedCell, resetSelectedCells, removeLastSelectedCell } from '../Redux/AppointmentSlice';
+import { Variables } from '../Data/Variables';
 
 
 function DayCell(props) {
@@ -71,7 +72,7 @@ function DayCell(props) {
     
     // Change 48 for dynamic time mapping. When the user sets options for less hours on the scheduler
     // Make the grid in the background, assigning IDs to each column to use for position of appointment layer
-    for (let hour = 0; hour < 48; hour++) {
+    for (let hour = 0; hour < Variables.TIMES.length; hour++) {
         let hourlySchedule = {
             reference: hour,
             key: "hour" + hour.toString(),
