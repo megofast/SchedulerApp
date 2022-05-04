@@ -1,6 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {Variables} from '../Data/Variables';
-import axios from 'axios';
 import axiosInstance from "../Data/axiosInstance";
 
 

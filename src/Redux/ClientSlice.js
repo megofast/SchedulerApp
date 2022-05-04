@@ -1,12 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {Variables} from '../Data/Variables';
-import axios from 'axios';
 import axiosInstance from "../Data/axiosInstance";
 
 
 export const getClientList = createAsyncThunk(
     "clients/getClientList", async (_, {getState} ) => {
-    const state = getState();       // Get the state so the login token can be used
     return axiosInstance.get('client')
         .then( (response) => response.data)
         .catch( (error) => {
