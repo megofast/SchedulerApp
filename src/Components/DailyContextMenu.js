@@ -26,6 +26,7 @@ function translatePositionIdToTime(positionID, end) {
 
 function DailyContextMenu(props) {
     const { selectedCells, currentDay } = useSelector( (state) => state.appointmentReducer);
+    const { viewingAnotherCalendar } = useSelector( (state) => state.loginReducer);
     const [createModalIsOpen, setModalIsOpen] = useState(false);
     const currDate = moment(currentDay);        // Create temporary date to keep state mutation from occuring by using currentDate
     const startTime = translatePositionIdToTime(selectedCells[0], false);
@@ -58,7 +59,11 @@ function DailyContextMenu(props) {
             height: '80px'
         }} >
             <ListGroup variant="flush">
-                <ListGroup.Item action onClick={ () => handleAdd() }>Add New Event</ListGroup.Item>
+                {
+                    viewingAnotherCalendar
+                    ? <ListGroup.Item action disabled>Add New Event</ListGroup.Item>
+                    : <ListGroup.Item action onClick={ () => handleAdd() }>Add New Event</ListGroup.Item>
+                }
                 <ListGroup.Item action onClick={ () => handleCancel() }>Cancel Selection</ListGroup.Item>
             </ListGroup>
         </div>

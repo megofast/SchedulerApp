@@ -23,7 +23,7 @@ export const getMonthlyAppointments = createAsyncThunk(
     "appointments/getMonthlyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
 
-    return axiosInstance.get(`appointment/month/${state.loginReducer.employeeID}/${parameters.month}/${parameters.year}`)
+    return axiosInstance.get(`appointment/month/${state.loginReducer.viewingEmployeeID}/${parameters.month}/${parameters.year}`)
         .then( (response) => response.data)
         .catch( (error) => {
             console.log(error);
@@ -35,7 +35,7 @@ export const getWeeklyAppointments = createAsyncThunk(
     "appointments/getWeeklyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
 
-    return axiosInstance.get(`appointment/week/${state.loginReducer.employeeID}/${parameters.startDate}/${parameters.endDate}`)
+    return axiosInstance.get(`appointment/week/${state.loginReducer.viewingEmployeeID}/${parameters.startDate}/${parameters.endDate}`)
         .then( (response) => response.data)
         .catch( (error) => {
             console.log(error);
@@ -47,7 +47,7 @@ export const getDailyAppointments = createAsyncThunk(
     "appointments/getDailyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
 
-    return axiosInstance.get(`appointment/day/${state.loginReducer.employeeID}/${parameters.date}`)
+    return axiosInstance.get(`appointment/day/${state.loginReducer.viewingEmployeeID}/${parameters.date}`)
         .then( (response) => response.data)
         .catch( (error) => {
             console.log(error);
@@ -139,10 +139,7 @@ const AppointmentSlice = createSlice({
         },
         [getMonthlyAppointments.fulfilled]: (state, action) => {
             state.loading = false;
-            state.monthAppointments = action.payload;
-            if (state.monthAppointments !== undefined) {
-                //state.monthAppointments = state.monthAppointments.sort(sortByStartTimes);
-            }
+            state.monthAppointments = action.payload.sort(sortByStartTimes);
         },
         [getMonthlyAppointments.rejected]: (state, action) => {
             state.loading = false;
@@ -152,10 +149,7 @@ const AppointmentSlice = createSlice({
         },
         [getWeeklyAppointments.fulfilled]: (state, action) => {
             state.loading = false;
-            state.weeklyAppointments = action.payload;
-            if (state.weeklyAppointments !== undefined) {
-                //state.weeklyAppointments = state.weeklyAppointments.sort(sortByStartTimes);
-            }
+            state.weeklyAppointments = action.payload.sort(sortByStartTimes);
         },
         [getWeeklyAppointments.rejected]: (state, action) => {
             state.loading = false;
@@ -165,10 +159,7 @@ const AppointmentSlice = createSlice({
         },
         [getDailyAppointments.fulfilled]: (state, action) => {
             state.loading = false;
-            state.dailyAppointments = action.payload;
-            if (state.dailyAppointments !== undefined) {
-                //state.dailyAppointments = state.dailyAppointments.sort(sortByStartTimes);
-            }
+            state.dailyAppointments = action.payload.sort(sortByStartTimes);
         },
         [getDailyAppointments.rejected]: (state, action) => {
             state.loading = false;

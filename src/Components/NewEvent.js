@@ -11,14 +11,14 @@ import '../CSS/NewEvent.css';
 
 const NewEvent = (props) => {
     const { currentDay } = useSelector( (state) => state.appointmentReducer);
-    const { token, employeeID} = useSelector( (state) => state.loginReducer);
+    const { token, loggedInEmployeeID} = useSelector( (state) => state.loginReducer);
     let currDay = moment(currentDay);       // To prevent changing of the stored state
     const dispatch = useDispatch();
     
     const [data, setData] = useState({
         title: "",
         appointmentID: "",
-        employeeID: employeeID,
+        employeeID: loggedInEmployeeID,
         clientID: "",
         appDate: props.date,
         startTime: props.start,
@@ -76,7 +76,7 @@ const NewEvent = (props) => {
         let endTime = moment(data.fixedEnd);
 
         if (startTime.isBetween(start, end, 'HH:mm' ) && endTime.isBetween(start, end, 'HH:mm' )) {
-        
+            console.log("create");
             const appointmentData = JSON.stringify({
                 employeeID: data.employeeID,
                 clientID: data.clientID,

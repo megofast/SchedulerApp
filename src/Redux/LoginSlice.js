@@ -31,22 +31,37 @@ const LoginSlice = createSlice({
         token: "",
         refreshToken: "",
         refreshing: false,
-        employeeID: null,
+        viewingEmployeeID: null,
+        loggedInEmployeeID: null,
+        viewingAnotherCalendar: false,
         employee: []
     },
     reducers: {
         logout: (state, action) => {
             state.token = "";
             state.employee = [];
-            state.employeeID = null;
+            state.viewingEmployeeID = null;
+            state.loggedInEmployeeID = null;
             state.isAuthenticated = false;
         },
         updateFromRefreshToken: (state, action) => {
             state.token = action.payload.data.accessToken;
             state.refreshToken = action.payload.data.refreshToken;
             state.employee = jwtDecode(action.payload.data.accessToken);
-            state.employeeID = parseInt(state.employee.employeeID);
+            state.loggedInEmployeeID = parseInt(state.employee.employeeID);
             state.isAuthenticated = true;
+            state.refreshing = false;
+        },
+        updateViewingEmployee: (state, action) => {
+            state.viewingEmployeeID = action.payload;
+            if (state.loggedInEmployeeID === action.payload) {
+                state.viewingAnotherCalendar = false;
+            } else {
+                state.viewingAnotherCalendar = true;
+            }
+        },
+        updateRefreshing: (state, action) => {
+            state.refreshing = action.payload;
         }
     },
     extraReducers: {
@@ -59,7 +74,8 @@ const LoginSlice = createSlice({
             state.token = action.payload.accessToken;
             state.refreshToken = action.payload.refreshToken;
             state.employee = jwtDecode(action.payload.accessToken);
-            state.employeeID = parseInt(state.employee.employeeID);
+            state.viewingEmployeeID = parseInt(state.employee.employeeID);
+            state.loggedInEmployeeID = parseInt(state.employee.employeeID);
             state.isAuthenticated = true;
         },
         [checkLoginCredentials.rejected]: (state, action) => {
@@ -70,6 +86,6 @@ const LoginSlice = createSlice({
     },
 });
 
-export const { logout, updateFromRefreshToken } = LoginSlice.actions;
+export const { logout, updateFromRefreshToken, updateViewingEmployee, updateRefreshing } = LoginSlice.actions;
 
 export default LoginSlice.reducer;

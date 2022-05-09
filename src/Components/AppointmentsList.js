@@ -47,7 +47,7 @@ const AppointmentsList = (props) => {
         }
     }
 
-    if (loading || refreshing) {
+    if (loading) {
         return (
             <div><i className="fa fa-spinner fa-spin"></i></div>
         )

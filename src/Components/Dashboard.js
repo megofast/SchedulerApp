@@ -10,10 +10,23 @@ import MiniWeeklySummary from './MiniWeeklySummary';
 const Dashboard = (props) => {
     const { dailyAppointments, weeklyAppointments, monthAppointments, loading, today, currentDay,  } = useSelector( (state) => state.appointmentReducer);
     let weeklyDay = moment(currentDay);
+    let nextAppointment;
+
+
     //const { token } = useSelector( (state) => state.loginReducer);
     const dispatch = useDispatch();
     
     const [currentTime, setCurrentTime] = useState(moment().format("hh:mm a"));
+
+    // Get the initial appointment for the next appointment in the day
+    for (let appointment of dailyAppointments) {
+        if (moment(appointment.startTime).isAfter()) {
+            // Set the next appointment variable, this method only works if the daily appointments are sorted.
+            nextAppointment = appointment;
+            break;
+        }
+    };
+
     useEffect( () => {
         let parameters = {
             date: today.format('YYYY-MM-DD')
@@ -36,6 +49,15 @@ const Dashboard = (props) => {
         // Create the interval to update the clock display
         const updateCurrentTime = () => {
             setCurrentTime(moment().format("hh:mm a"));
+            
+            // When the clock updates, check to see what the next appointment is for the day
+            for (let appointment of dailyAppointments) {
+                if (moment(appointment.startTime).isAfter()) {
+                    // Set the next appointment variable, this method only works if the daily appointments are sorted. (need to setup sorting)
+                    nextAppointment = appointment;
+                    break;
+                }
+            };
         }
         let clockID = 0;
         clockID = setInterval(updateCurrentTime, 6000);
@@ -46,7 +68,7 @@ const Dashboard = (props) => {
         }
     }, [dispatch, today])
 
-
+    
     if (loading) {
         return (
             <div><i className="fa fa-spinner fa-spin"></i></div>
@@ -64,7 +86,7 @@ const Dashboard = (props) => {
                                     <Col className="mr-2">
                                         <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Next Appointment</div>
-                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{dailyAppointments[0] !== undefined ? moment(dailyAppointments[0].startTime).format("hh:mm a") + ' - ' + moment(dailyAppointments[0].endTime).format("hh:mm a") : 'No Appointments Today!'}</div>
+                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{nextAppointment !== undefined ? moment(nextAppointment.startTime).format("hh:mm a") + ' - ' + moment(nextAppointment.endTime).format("hh:mm a") : 'No Appointments Today!'}</div>
                                     </Col>
                                     <Col md="auto">
                                         <i className="fas fa-calendar fa-2x text-gray-300"></i>
@@ -74,16 +96,16 @@ const Dashboard = (props) => {
                             </Card>
                         </Col>
                         <Col>
-                            <Card className="border-success border-end-0 border-top-0 border-bottom-0 border-5 shadow h-100 py-2">
+                            <Card className="border-secondary border-end-0 border-top-0 border-bottom-0 border-5 shadow h-100 py-2">
                                 <Card.Body>
                                 <Row className="no-gutters align-items-center">
                                     <Col className="mr-2">
-                                        <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        <div className="text-xs font-weight-bold text-secondary text-uppercase mb-1">
                                             Appointments Today</div>
                                         <div className="h5 mb-0 font-weight-bold text-gray-800">{dailyAppointments.length !== undefined ? dailyAppointments.length : 0}</div>
                                     </Col>
                                     <Col md="auto">
-                                        <i className="fas fa-calendar fa-2x text-gray-300"></i>
+                                        <i className="fas fa-hashtag fa-2x text-gray-300"></i>
                                     </Col>
                                 </Row>
                                 </Card.Body>
@@ -106,16 +128,16 @@ const Dashboard = (props) => {
                             </Card>
                         </Col>
                         <Col>
-                            <Card className="border-info border-end-0 border-top-0 border-bottom-0 border-5 shadow h-100 py-2">
+                            <Card className="border-success border-end-0 border-top-0 border-bottom-0 border-5 shadow h-100 py-2">
                                 <Card.Body>
                                 <Row className="no-gutters align-items-center">
                                     <Col className="mr-2">
-                                        <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
                                             Current Date</div>
-                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{ today.format('YYYY/MM/DD') }</div>
+                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{ today.format('D / M / YYYY') }</div>
                                     </Col>
                                     <Col md="auto">
-                                        <i className="far fa-clock fa-2x text-gray-300"></i>
+                                        <i className="fas fa-calendar fa-2x text-gray-300"></i>
                                     </Col>
                                 </Row>
                                 </Card.Body>

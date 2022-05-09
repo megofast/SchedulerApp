@@ -10,6 +10,7 @@ import moment from 'moment';
 
 function CalendarContextMenu(props) {
     const { currentDay } = useSelector( (state) => state.appointmentReducer);
+    const { viewingAnotherCalendar } = useSelector( (state) => state.loginReducer);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [createModalIsOpen, setModalIsOpen] = useState(false);
@@ -45,7 +46,11 @@ function CalendarContextMenu(props) {
             height: '120px'
         }} >
             <ListGroup variant="flush">
-                <ListGroup.Item action onClick={ () => handleAdd() }>Add New Event</ListGroup.Item>
+                {
+                    viewingAnotherCalendar
+                    ? <ListGroup.Item action disabled>Add New Event</ListGroup.Item>
+                    : <ListGroup.Item action onClick={ () => handleAdd() }>Add New Event</ListGroup.Item>
+                }
                 <ListGroup.Item action onClick={ () => handleViewDay() }>View Day</ListGroup.Item>
                 <ListGroup.Item action onClick={ () => handleCancel() }>Cancel Selection</ListGroup.Item>
             </ListGroup>
