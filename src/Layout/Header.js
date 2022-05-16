@@ -8,7 +8,7 @@ import { updateViewingEmployee } from '../Redux/LoginSlice';
 
 const Header = () => {
     const { employees } = useSelector( (state) => state.employeeReducer);
-    const { loggedInEmployeeID, viewingEmployeeID, viewingAnotherCalendar } = useSelector( (state) => state.loginReducer);
+    const { loggedInEmployeeID } = useSelector( (state) => state.loginReducer);
     const [currentCalendar, setCurrentCalendar] = useState({name: "My Calendar", id: null});
     const dispatch = useDispatch();
 

@@ -1,19 +1,50 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Variables} from '../Data/Variables';
 import { useDispatch, useSelector } from "react-redux";
-import { Form, Modal, Button } from 'react-bootstrap';
+import { Form, Modal, Button, InputGroup, DropdownButton, Dropdown, Row, Col } from 'react-bootstrap';
 //import 'bootstrap/dist/css/bootstrap.min.css';
 import { getMonthlyAppointments, getWeeklyAppointments, getDailyAppointments } from '../Redux/AppointmentSlice'
 import moment from 'moment';
 import axios from 'axios';
 import '../CSS/NewEvent.css';
+import { getClientList } from '../Redux/ClientSlice';
+import NewClient from './NewClient';
 
 
 const NewEvent = (props) => {
     const { currentDay } = useSelector( (state) => state.appointmentReducer);
     const { token, loggedInEmployeeID} = useSelector( (state) => state.loginReducer);
+    const { clients } = useSelector( (state) => state.clientReducer);
     let currDay = moment(currentDay);       // To prevent changing of the stored state
     const dispatch = useDispatch();
+    
+    const [clientFirstName, setClientFirstName] = useState("First Name");
+    const [clientLastName, setClientLastName] = useState("Last Name");
+    
+    const [createModalIsOpen, setModalIsOpen] = useState(false);
+    const handleCreateModalEvent = (ID) => {
+        setModalIsOpen(!createModalIsOpen);
+        if (ID !== 0 && ID !== undefined) {
+            setClientFirstName(ID.firstName);
+            setClientLastName(ID.lastName);
+            setData(values => ({
+                ...values,
+                clientID: ID.ID
+            }));
+        }
+    }
+    const [editTarget, setEditTarget] = useState({
+        clientID: "",
+        firstName: "",
+        lastName: "",
+        phone: "",
+        email: "",
+    });
+
+    useEffect( () => {
+        // Load the client names
+        dispatch(getClientList());
+    }, [dispatch]);
     
     const [data, setData] = useState({
         title: "",
@@ -29,6 +60,22 @@ const NewEvent = (props) => {
         fixedEnd: props.date + ' ' + props.end,
     });
     
+    const updateClient = (event) => {
+        // This will handle updating the client name and number when the user selects a new name from the list
+        for (let x in clients) {
+            if (clients[x].clientID.toString() === event.target.id) {
+                // The client with the inputted ID was found, update the name
+                setClientFirstName(clients[x].firstName);
+                setClientLastName(clients[x].lastName);
+            }
+        }
+        
+        setData(values => ({
+            ...values,
+            clientID: event.target.id
+        }));
+    }
+
     const updateData = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -37,6 +84,18 @@ const NewEvent = (props) => {
             ...values,
             [name]: value
         }))
+
+        // If the user types in a client ID, update the name field to show the name of the corresponding client
+        if (event.target.name === 'clientID') {
+            // The data will be updated above, must update the client name
+            for (let x in clients) {
+                if (clients[x].clientID.toString() === event.target.value) {
+                    // The client with the inputted ID was found, update the name
+                    setClientFirstName(clients[x].firstName);
+                    setClientLastName(clients[x].lastName);
+                }
+            }
+        }
 
         // Fix an error that if the date is set after the time the time is not created properly
         if (event.target.name === 'appDate') {
@@ -123,7 +182,7 @@ const NewEvent = (props) => {
             });
         }
     } 
-
+    
     return (
         <>
         <Modal show={props.createModalOpen} onHide={props.handleCreateModalOpen}>
@@ -132,14 +191,26 @@ const NewEvent = (props) => {
             </Modal.Header>
             <Modal.Body>
             <Form>
-                  <Form.Group className="mb-3" controlId="formTitle">
-                      <Form.Label>Title</Form.Label>
-                      <Form.Control name="title" type="string" placeholder="title" value={data.title} onChange={updateData}/>
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formClientID">
-                      <Form.Label>clientID</Form.Label>
-                      <Form.Control name="clientID" type="number" placeholder="ClientID" value={data.clientID} onChange={updateData}/>
-                  </Form.Group>
+                  <Form.Control className="mb-3" name="title" type="string" placeholder="Title" value={data.title} onChange={updateData}/>
+                  <InputGroup className="mb-3">
+                        <Form.Control aria-label="Client ID" name="clientID" type="number" placeholder="Client ID" value={data.clientID} onChange={updateData} />
+
+                        <DropdownButton variant="primary" title="Select Client" id="select-client-dropdown" align="end">
+                            {
+                                Array.isArray(clients) ?
+                                clients.map( client => 
+                                    <Dropdown.Item key={client.clientID} href="#" id={client.clientID} onClick={updateClient}>{client.firstName} {client.lastName}</Dropdown.Item>
+                                )
+                                : null
+                            }
+                            <Dropdown.Divider></Dropdown.Divider>
+                            <Dropdown.Item href="#" onClick={() => handleCreateModalEvent(0)}>Add New Client</Dropdown.Item>
+                        </DropdownButton>
+                  </InputGroup>
+                  <Row>
+                        <Col><Form.Control className="mb-3" plaintext readOnly value={ clientFirstName } /></Col>
+                        <Col><Form.Control className="mb-3" plaintext readOnly value={ clientLastName } /></Col>
+                  </Row>
                   <Form.Group className="mb-3" controlId="formAppDate">
                       <Form.Label>Appointment Date</Form.Label>
                       <Form.Control name="appDate" type="date" placeholder="Appointment Date" value={data.appDate} onChange={updateData}/>
@@ -171,6 +242,7 @@ const NewEvent = (props) => {
                </Button>
             </Modal.Footer>
         </Modal>
+        <NewClient createModalOpen={createModalIsOpen} handleCreateModalOpen={handleCreateModalEvent} target={editTarget} />
         </>
     );
   }

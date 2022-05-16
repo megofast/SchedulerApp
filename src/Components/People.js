@@ -16,6 +16,7 @@ const People = (props) => {
 
     const [createModalIsOpen, setModalIsOpen] = useState(false);
     const [editTarget, setEditTarget] = useState({
+        clientID: "",
         firstName: "",
         lastName: "",
         phone: "",
@@ -34,6 +35,7 @@ const People = (props) => {
     const handleEditClose = () => {
         // send as a prop so when the add/edit window is close the state is reset.
         setEditTarget({
+            clientID: "",
             firstName: "",
             lastName: "",
             phone: "",
@@ -84,6 +86,7 @@ const People = (props) => {
                 <table className="table table-striped">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Name</th>
                             <th>Phone</th>
                             <th>Email</th>
@@ -95,6 +98,7 @@ const People = (props) => {
                         {Array.isArray(employees)
                         ? employees.map(employee =>
                             <tr key = {employee.employeeID}>
+                                <td></td>
                                 <td>{employee.firstName} {employee.lastName}</td>
                                 <td>{employee.phone}</td>
                                 <td>{employee.email}</td>
@@ -106,6 +110,7 @@ const People = (props) => {
                         {Array.isArray(clients)
                         ? clients.map(client =>
                             <tr key = {client.clientID}>
+                                <td>{client.clientID}</td>
                                 <td>{client.firstName} {client.lastName}</td>
                                 <td>{client.phone}</td>
                                 <td>{client.email}</td>
