@@ -1,6 +1,6 @@
 .input_wrapper {
     position: relative;
-    
+    display: inline-block;
 }
 
 .input_wrapper input {
@@ -18,5 +18,19 @@
     position: absolute;
     top: 12px;
     left: 16px;
-    
+}
+
+.icon_following_input {
+    display: inline-block;
+}
+
+.icon_button {
+    color: var(--bs-primary);
+}
+.icon_button:hover {
+    color: var(--bs-secondary);
+}
+
+.icon_button_selected {
+    color: var(--bs-info);
 }

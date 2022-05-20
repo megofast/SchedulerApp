@@ -10,22 +10,19 @@ import MiniWeeklySummary from './MiniWeeklySummary';
 const Dashboard = (props) => {
     const { dailyAppointments, weeklyAppointments, monthAppointments, loading, today, currentDay,  } = useSelector( (state) => state.appointmentReducer);
     let weeklyDay = moment(currentDay);
-    let nextAppointment;
-
-
-    //const { token } = useSelector( (state) => state.loginReducer);
     const dispatch = useDispatch();
-    
     const [currentTime, setCurrentTime] = useState(moment().format("hh:mm a"));
-
+    let temporaryNextAppoint = "";
     // Get the initial appointment for the next appointment in the day
     for (let appointment of dailyAppointments) {
         if (moment(appointment.startTime).isAfter()) {
             // Set the next appointment variable, this method only works if the daily appointments are sorted.
-            nextAppointment = appointment;
+            temporaryNextAppoint = appointment;
             break;
         }
     };
+    const [nextAppointment, setNextAppointment] = useState(temporaryNextAppoint); 
+
 
     useEffect( () => {
         let parameters = {
@@ -51,13 +48,19 @@ const Dashboard = (props) => {
             setCurrentTime(moment().format("hh:mm a"));
             
             // When the clock updates, check to see what the next appointment is for the day
+            let foundNext = false;
             for (let appointment of dailyAppointments) {
                 if (moment(appointment.startTime).isAfter()) {
-                    // Set the next appointment variable, this method only works if the daily appointments are sorted. (need to setup sorting)
-                    nextAppointment = appointment;
+                    // Set the next appointment variable, this method only works if the daily appointments are sorted.
+                    setNextAppointment(appointment);
+                    foundNext = true;
                     break;
                 }
             };
+            // Another appointment was not found, set nextappointment to nothing
+            if (!foundNext) {
+                setNextAppointment("");
+            }
         }
         let clockID = 0;
         clockID = setInterval(updateCurrentTime, 6000);
@@ -66,6 +69,7 @@ const Dashboard = (props) => {
         return () => {
             clearInterval(clockID);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, today])
 
     
@@ -86,7 +90,7 @@ const Dashboard = (props) => {
                                     <Col className="mr-2">
                                         <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             Next Appointment</div>
-                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{nextAppointment !== undefined ? moment(nextAppointment.startTime).format("hh:mm a") + ' - ' + moment(nextAppointment.endTime).format("hh:mm a") : 'No Appointments Today!'}</div>
+                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{nextAppointment !== "" ? moment(nextAppointment.startTime).format("hh:mm a") + ' - ' + moment(nextAppointment.endTime).format("hh:mm a") : 'No Appointments Today!'}</div>
                                     </Col>
                                     <Col md="auto">
                                         <i className="fas fa-calendar fa-2x text-gray-300"></i>

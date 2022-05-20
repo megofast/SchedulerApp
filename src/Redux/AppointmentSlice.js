@@ -132,6 +132,10 @@ const AppointmentSlice = createSlice({
             state.currentMonth = state.currentDay.month();
             //state.monthAppointments = getCurrentMonthAppointments(state.appointments, state.currentMonth);
         },
+        resetCurrentDay: (state) => {
+            state.currentMonth = moment().month();
+            state.currentDay = moment();
+        },
     },
     extraReducers: {
         [getMonthlyAppointments.pending]: (state, action) => {
@@ -168,6 +172,6 @@ const AppointmentSlice = createSlice({
 });
 
 export const { moveCalendarToNextMonth, moveCalendarToPreviousMonth, changeCurrentDay, moveToNextWeek, moveToPreviousWeek, 
-    addSelectedCell, resetSelectedCells, removeLastSelectedCell, moveToNextDay, moveToPreviousDay } = AppointmentSlice.actions;
+    addSelectedCell, resetSelectedCells, removeLastSelectedCell, moveToNextDay, moveToPreviousDay, resetCurrentDay } = AppointmentSlice.actions;
 
 export default AppointmentSlice.reducer;
