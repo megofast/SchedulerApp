@@ -26,6 +26,7 @@
 
 .icon_button {
     color: var(--bs-primary);
+    cursor: pointer;
 }
 .icon_button:hover {
     color: var(--bs-secondary);
@@ -33,4 +34,5 @@
 
 .icon_button_selected {
     color: var(--bs-info);
+    
 }

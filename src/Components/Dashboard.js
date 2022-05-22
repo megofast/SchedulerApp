@@ -18,6 +18,7 @@ const Dashboard = (props) => {
         if (moment(appointment.startTime).isAfter()) {
             // Set the next appointment variable, this method only works if the daily appointments are sorted.
             temporaryNextAppoint = appointment;
+            console.log(temporaryNextAppoint);
             break;
         }
     };
@@ -53,6 +54,7 @@ const Dashboard = (props) => {
                 if (moment(appointment.startTime).isAfter()) {
                     // Set the next appointment variable, this method only works if the daily appointments are sorted.
                     setNextAppointment(appointment);
+                    console.log(appointment);
                     foundNext = true;
                     break;
                 }

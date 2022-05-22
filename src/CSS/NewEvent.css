@@ -1,3 +1,7 @@
 input:invalid {
     border-color: red;
 }
+
+.validation-text {
+    color: red;
+}

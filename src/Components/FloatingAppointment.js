@@ -7,6 +7,7 @@ import {Variables} from '../Data/Variables';
 import moment from 'moment';
 import axios from 'axios';
 import EditEvent from '../Components/EditEvent';
+import { fixContrastColor } from '../Data/contrastData';
 
 
 function translateTimeToPositionId(time, daily) {
@@ -186,7 +187,7 @@ function FloatingAppointment(props) {
     return (
         <>
         <OverlayTrigger rootClose='true' trigger="click" placement="auto" onExited={ appClicked } overlay={appointmentPopover(props.data)}>
-        <div className='layer cursor-pointer' style={{ backgroundColor: props.data.color, 
+        <div className='layer cursor-pointer' style={{ backgroundColor: props.data.color, color: fixContrastColor(props.data.color),
             borderColor: props.data.color,
             left: position.left,
             top: position.top,

@@ -8,6 +8,7 @@ import { changeCurrentDay, getMonthlyAppointments } from '../Redux/AppointmentSl
 import {Variables} from '../Data/Variables';
 import axios from 'axios';
 import EditEvent from '../Components/EditEvent';
+import { fixContrastColor } from '../Data/contrastData';
 
 
 function CalendarDay(props) {
@@ -184,7 +185,7 @@ function CalendarDay(props) {
                         {day.appointments.map((appointment, i) => {
                             return (
                             <OverlayTrigger key={i} rootClose="true" trigger="click" placement="auto" onExited={ appClicked } overlay={appointmentPopover(appointment)}>
-                                <span className="badge cursor-pointer" key={"Badge" + i.toString()} onClick={ appClicked } style={{ backgroundColor: appointment.color }}>{ appointment.title }</span>
+                                <span className="badge cursor-pointer" key={"Badge" + i.toString()} onClick={ appClicked } style={{ backgroundColor: appointment.color, color: fixContrastColor(appointment.color) }}>{ appointment.title }</span>
                             </OverlayTrigger>
                         )})}
                     </Col>
