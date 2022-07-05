@@ -68,7 +68,7 @@ const NewEvent = (props) => {
             let parameters = {
                 date: moment(data.appDate).format('YYYY-MM-DD'),
             }
-            console.log(parameters);
+            
             dispatch(getDailyAppointments(parameters));
         }
     }, [dispatch]);

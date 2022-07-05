@@ -10,6 +10,7 @@ import AppointmentsList from './Components/AppointmentsList';
 import MainLayout from './Components/MainLayout';
 import People from './Components/People';
 import Dashboard from './Components/Dashboard';
+import Search from './Components/Search';
 import { useSelector } from "react-redux";
 
 function RequireAuthorization( { children } ) {
@@ -34,6 +35,7 @@ function App() {
               <Route path='/Calendar/Day' element={ <RequireAuthorization> <Daily /> </RequireAuthorization> } />
               <Route path='Appointments' element={ <RequireAuthorization> <AppointmentsList /> </RequireAuthorization> } />
               <Route path='People' element={ <RequireAuthorization> <People /> </RequireAuthorization> } />
+              <Route path='Search' element={ <RequireAuthorization> <Search /> </RequireAuthorization>} />
             </Route>
           </Routes>
         </>

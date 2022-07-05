@@ -34,8 +34,21 @@ export const getMonthlyAppointments = createAsyncThunk(
 export const getWeeklyAppointments = createAsyncThunk(
     "appointments/getWeeklyAppointments", async (parameters, {getState, dispatch}) => {
     const state = getState();       // Get the state so the login token can be used
-
+    
     return axiosInstance.get(`appointment/week/${state.loginReducer.viewingEmployeeID}/${parameters.startDate}/${parameters.endDate}`)
+        .then( (response) => response.data)
+        .catch( (error) => {
+            console.log(error);
+            return error;
+        });
+});
+
+export const getSearchResults = createAsyncThunk(
+    "appointments/getSearchResults", async (parameters, {getState, dispatch}) => {
+    const state = getState();       // Get the state so the login token can be used
+    // Send all the filled information to the backend to handle deciding what search terms to use
+    
+    return axiosInstance.get(`appointment/search/${parameters.employeeID}/${parameters.clientID}/${parameters.startDate}/${parameters.endDate}/${parameters.startTime}/${parameters.endTime}/${parameters.title}`)
         .then( (response) => response.data)
         .catch( (error) => {
             console.log(error);
@@ -69,8 +82,15 @@ const AppointmentSlice = createSlice({
         today: moment(),
         loading: false,
         selectedCells: [],
+        searchResults: [],
+        searchString: "",
     },
     reducers: {
+        setSearchString: (state, action) => {
+            state.searchString = "Results For: " + action.payload.startDate + " to " + action.payload.endDate + " | " + 
+            action.payload.startTime + " to " + action.payload.endTime + " | " +
+            "Employee ID: " + action.payload.employeeID + " | Client ID: " + action.payload.clientID;
+        },
         addSelectedCell: (state, action) => {
             state.selectedCells.push(action.payload);
         },
@@ -168,10 +188,21 @@ const AppointmentSlice = createSlice({
         [getDailyAppointments.rejected]: (state, action) => {
             state.loading = false;
         },
+        [getSearchResults.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [getSearchResults.fulfilled]: (state, action) => {
+            state.loading = false;
+            console.log(action.payload);
+            state.searchResults = action.payload.sort(sortByStartTimes);
+        },
+        [getSearchResults.rejected]: (state, action) => {
+            state.loading = false;
+        },
     },
 });
 
 export const { moveCalendarToNextMonth, moveCalendarToPreviousMonth, changeCurrentDay, moveToNextWeek, moveToPreviousWeek, 
-    addSelectedCell, resetSelectedCells, removeLastSelectedCell, moveToNextDay, moveToPreviousDay, resetCurrentDay } = AppointmentSlice.actions;
+    addSelectedCell, resetSelectedCells, removeLastSelectedCell, moveToNextDay, moveToPreviousDay, resetCurrentDay, setSearchString } = AppointmentSlice.actions;
 
 export default AppointmentSlice.reducer;

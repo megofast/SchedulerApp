@@ -29,7 +29,7 @@ const Sidebar = () => {
                     }
                     
                     <ListGroup.Item action eventKey='people' as={Link} to='/People'><i className="fas fa-users fa-fw me-3"></i>People</ListGroup.Item>
-                    <ListGroup.Item action eventKey='search'><i className="fas fa-search fa-fw me-3"></i>Search</ListGroup.Item>
+                    <ListGroup.Item action eventKey='search' as={Link} to='/Search'><i className="fas fa-search fa-fw me-3"></i>Search</ListGroup.Item>
                 </ListGroup>
             </div>
         </Nav>

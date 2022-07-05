@@ -11,15 +11,7 @@ export const getEmployeeList = createAsyncThunk(
         .catch( (error) => {
             console.log(error);
             return error;
-        });/*
-    return axios
-    .get(Variables.API_URL + "employee",{
-        headers: {
-            Authorization: `Bearer ${state.loginReducer.token}`
-        }
-    })
-    .then((response) => response.data)
-    .catch((error) => error)*/
+        });
 });
 
 
