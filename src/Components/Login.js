@@ -4,11 +4,13 @@ import {useNavigate} from 'react-router-dom';
 import { Container, Col, Row, Card, Form, FloatingLabel, Button} from 'react-bootstrap';
 import { useDispatch, useSelector } from "react-redux";
 import { checkLoginCredentials } from '../Redux/LoginSlice';
+import { getCurrentEmployeeInfo } from '../Redux/LoginSlice';
 import Register from './Register';
 
 
 function App() {
-    const { isAuthenticated, loading, failedAttempt } = useSelector( (state) => state.loginReducer);
+    const { isAuthenticated, loading, failedAttempt, tokenPayload } = useSelector( (state) => state.loginReducer);
+
     const [registerModalIsOpen, setRegisterModalIsOpen] = useState(false);
     
     const handleRegisterModalEvent = () => {
@@ -44,6 +46,8 @@ function App() {
     useEffect( () => {
         // Check if the user is authenticated, if so forward to the main layout
         if (isAuthenticated) {
+            // The user logged in, fill the employee data in the login reducer
+            dispatch(getCurrentEmployeeInfo(tokenPayload.employeeID));
             navigate("/");
         }
         if (failedAttempt) {

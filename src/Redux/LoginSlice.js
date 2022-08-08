@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {Variables} from '../Data/Variables';
 import axios from 'axios';
+import axiosInstance from "../Data/axiosInstance";
 import jwtDecode from "jwt-decode";
 
 
@@ -21,6 +22,16 @@ export const checkLoginCredentials = createAsyncThunk(
     .then(response => response.data)
 });
 
+export const getCurrentEmployeeInfo = createAsyncThunk(
+    "login/getCurrentEmployeeInfo", async (employeeID) => {
+    
+    return axiosInstance.get(`employee/${employeeID}`)
+        .then( (response) => response.data)
+        .catch( (error) => {
+            console.log(error);
+            return error;
+        });
+});
 
 const LoginSlice = createSlice({
     name: "authenticatedUser",
@@ -34,7 +45,16 @@ const LoginSlice = createSlice({
         viewingEmployeeID: null,
         loggedInEmployeeID: null,
         viewingAnotherCalendar: false,
-        employee: []
+        tokenPayload: [],
+        employee: {
+            employeeID: null,
+            firstName: null,
+            lastName: null,
+            phone: null,
+            email: null,
+            username: null
+        },
+        employeeSettings: null,
     },
     reducers: {
         logout: (state, action) => {
@@ -47,8 +67,8 @@ const LoginSlice = createSlice({
         updateFromRefreshToken: (state, action) => {
             state.token = action.payload.data.accessToken;
             state.refreshToken = action.payload.data.refreshToken;
-            state.employee = jwtDecode(action.payload.data.accessToken);
-            state.loggedInEmployeeID = parseInt(state.employee.employeeID);
+            state.tokenPayload = jwtDecode(action.payload.data.accessToken);
+            state.loggedInEmployeeID = parseInt(state.tokenPayload.employeeID);
             state.isAuthenticated = true;
             state.refreshing = false;
         },
@@ -62,6 +82,9 @@ const LoginSlice = createSlice({
         },
         updateRefreshing: (state, action) => {
             state.refreshing = action.payload;
+        },
+        updateEmployeeInfo: (state, action) => {
+            state.employee = action.payload;
         }
     },
     extraReducers: {
@@ -73,15 +96,30 @@ const LoginSlice = createSlice({
             state.loading = false;
             state.token = action.payload.accessToken;
             state.refreshToken = action.payload.refreshToken;
-            state.employee = jwtDecode(action.payload.accessToken);
-            state.viewingEmployeeID = parseInt(state.employee.employeeID);
-            state.loggedInEmployeeID = parseInt(state.employee.employeeID);
+            state.tokenPayload = jwtDecode(action.payload.accessToken);
+            state.viewingEmployeeID = parseInt(state.tokenPayload.employeeID);
+            state.loggedInEmployeeID = parseInt(state.tokenPayload.employeeID);
             state.isAuthenticated = true;
         },
         [checkLoginCredentials.rejected]: (state, action) => {
             state.failedAttempt = true;
             state.loading = false;
             state.isAuthenticated = false;   
+        },
+        [getCurrentEmployeeInfo.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [getCurrentEmployeeInfo.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.employee.employeeID = action.payload[0].employeeID;
+            state.employee.firstName = action.payload[0].firstName;
+            state.employee.lastName = action.payload[0].lastName;
+            state.employee.phone = action.payload[0].phone;
+            state.employee.email = action.payload[0].email;
+            state.employee.username = action.payload[0].username;
+        },
+        [getCurrentEmployeeInfo.rejected]: (state, action) => {
+            state.loading = false;
         },
     },
 });

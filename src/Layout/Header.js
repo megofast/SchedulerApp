@@ -10,7 +10,7 @@ import Notifications from '../Components/Notifications';
 
 const Header = () => {
     const { employees } = useSelector( (state) => state.employeeReducer);
-    const { loggedInEmployeeID } = useSelector( (state) => state.loginReducer);
+    const { loggedInEmployeeID, employee } = useSelector( (state) => state.loginReducer);
     const [currentCalendar, setCurrentCalendar] = useState({name: "My Calendar", id: null});
     const [accountModalIsOpen, setAccountModalIsOpen] = useState(false);
     const [notificationsIsOpen, setNotificationsIsOpen] = useState(false);
@@ -57,6 +57,8 @@ const Header = () => {
                 <Nav className="justify-content-end">
                     <Nav.Link className="mx-2" href="" onClick={ handleNotificationModalOpen }>Notifications <Badge bg="info" >0</Badge></Nav.Link>
                     <NavDropdown className="mx-2" id="account-dropdown" title="My Account">
+                        <NavDropdown.Item disabled>Welcome {employee.firstName} {employee.lastName}</NavDropdown.Item>
+                        <Dropdown.Divider></Dropdown.Divider>
                         <NavDropdown.Item href="" onClick={ handleAccountModalOpen }>Settings</NavDropdown.Item>
                         <NavDropdown.Item href="" onClick={ () => handleLogout() }>Logout</NavDropdown.Item>
                     </NavDropdown>
