@@ -63,7 +63,6 @@ const Header = () => {
 
         // Setup a clock to check daily appointment times to notify when an appointment is upcoming
         const updateCurrentTime = () => {
-            //setNotifyAppointments([]);
             dailyAppointments.forEach( (appointment) => {
                 // check if an appointment falls within the notification window set in the settings
                 if (moment().isAfter(moment(appointment.startTime).subtract(notifyDuration, 'minutes')) &&
@@ -72,15 +71,18 @@ const Header = () => {
                     if (!checkForNotifiedAppointment(appointment)) {
                         if (Boolean(notifyReminder) === true) {
                             // Alert the user to upcoming appointment
-                            //alert("upcoming appointment at " + appointment.startTime);
-                            //setCurrentAppointment(appointment);
+                            setNotifyAppointments(state => [...state, {notified: true, app: appointment}]);
+                        } else {
+                            setNotifyAppointments(state => [...state, {notified: false, app: appointment}]);
                         }
-                        setNotifyAppointments(state => [...state, {notified: true, app: appointment}]);
                     }
                 } else {
                     // Remove the appointment from the list since it no longer is within range
                     let goodAppointments = [];
+                    console.log("elsed");
                     notifyAppointments.forEach( (app) => {
+                        console.log(appointment);
+                        console.log(app.app);
                         if (app.app.appointmentID === appointment.appointmentID) {
                             // This appointment is old and needs to be removed, do not add to good appointments list
                             
@@ -106,7 +108,7 @@ const Header = () => {
             clearInterval(clockID);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, dailyAppointments]);
+    }, [dispatch, dailyAppointments, notifyAppointments]);
     
 
     return (

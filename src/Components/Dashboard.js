@@ -15,6 +15,7 @@ const Dashboard = (props) => {
     const [currentTime, setCurrentTime] = useState(moment().format("hh:mm a"));
     let temporaryNextAppoint = "";
     // Get the initial appointment for the next appointment in the day
+    /*
     for (let appointment of dailyAppointments) {
         if (moment(appointment.startTime).isAfter()) {
             // Set the next appointment variable, this method only works if the daily appointments are sorted.
@@ -23,6 +24,7 @@ const Dashboard = (props) => {
             break;
         }
     };
+    */
     const [nextAppointment, setNextAppointment] = useState(temporaryNextAppoint); 
 
 
@@ -45,7 +47,7 @@ const Dashboard = (props) => {
 
         dispatch(getWeeklyAppointments(parameters));
 
-        // Create the interval to update the clock display
+        // Create the interval to update the clock display and check for the next appointment
         const updateCurrentTime = () => {
             setCurrentTime(moment().format("hh:mm a"));
             
@@ -64,7 +66,11 @@ const Dashboard = (props) => {
             if (!foundNext) {
                 setNextAppointment("");
             }
-        }
+        };
+
+        // Check for updated appointments without having to wait for the timer to trigger
+        updateCurrentTime();
+
         let clockID = 0;
         clockID = setInterval(updateCurrentTime, 60000);
 
@@ -141,7 +147,7 @@ const Dashboard = (props) => {
                                     <Col className="mr-2">
                                         <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
                                             Current Date</div>
-                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{ today.format('D / M / YYYY') }</div>
+                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{ today.format('M / D / YYYY') }</div>
                                     </Col>
                                     <Col md="auto">
                                         <i className="fas fa-calendar fa-2x text-gray-300"></i>
