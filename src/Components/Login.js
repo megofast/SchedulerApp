@@ -57,6 +57,7 @@ function App() {
             });
             alert("Incorrect Credentials");
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated, navigate, failedAttempt])
 
     return (

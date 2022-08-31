@@ -71,6 +71,7 @@ const NewEvent = (props) => {
             
             dispatch(getDailyAppointments(parameters));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch]);
     
     const [data, setData] = useState({

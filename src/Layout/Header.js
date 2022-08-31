@@ -105,7 +105,7 @@ const Header = () => {
         return () => {
             clearInterval(clockID);
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, dailyAppointments]);
     
 

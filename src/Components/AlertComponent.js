@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import {Variables} from '../Data/Variables';
 import Toast from 'react-bootstrap/Toast';
 
 import moment from 'moment';

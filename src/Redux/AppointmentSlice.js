@@ -4,7 +4,6 @@ import moment from 'moment';
 import axiosInstance from "../Data/axiosInstance";
 
 
-
 // Create a sort function to place the appointments in ascending order based on start times.
 function sortByStartTimes(a, b) {
     if (moment(a.startTime).isBefore(moment(b.startTime))) {
@@ -45,7 +44,6 @@ export const getWeeklyAppointments = createAsyncThunk(
 
 export const getSearchResults = createAsyncThunk(
     "appointments/getSearchResults", async (parameters, {getState, dispatch}) => {
-    const state = getState();       // Get the state so the login token can be used
     // Send all the filled information to the backend to handle deciding what search terms to use
     
     return axiosInstance.get(`appointment/search/${parameters.employeeID}/${parameters.clientID}/${parameters.startDate}/${parameters.endDate}/${parameters.startTime}/${parameters.endTime}/${parameters.title}`)
@@ -89,7 +87,7 @@ const AppointmentSlice = createSlice({
         setSearchString: (state, action) => {
             state.searchString = "Results For: " + action.payload.startDate + " to " + action.payload.endDate + " | " + 
             action.payload.startTime + " to " + action.payload.endTime + " | " +
-            "Employee ID: " + action.payload.employeeID + " | Client ID: " + action.payload.clientID;
+            "Employee ID: " + action.payload.employeeID + " | Client ID: " + action.payload.clientID + " | Title: " + action.payload.title;
         },
         addSelectedCell: (state, action) => {
             state.selectedCells.push(action.payload);
@@ -193,7 +191,6 @@ const AppointmentSlice = createSlice({
         },
         [getSearchResults.fulfilled]: (state, action) => {
             state.loading = false;
-            console.log(action.payload);
             state.searchResults = action.payload.sort(sortByStartTimes);
         },
         [getSearchResults.rejected]: (state, action) => {

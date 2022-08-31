@@ -54,7 +54,7 @@ const MiniWeeklySummary = (props) => {
                             if (i === 0) {
                                 return <Col lg={1} key={i} className="border bg-white"></Col>
                             } else {
-                                return <Col key={i} className="border bg-white smallLabels">{time}</Col>
+                                return <Col key={i} className="border bg-white smallLabels p-0">{time}</Col>
                             }
                         })
                     }
