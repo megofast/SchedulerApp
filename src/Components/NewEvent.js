@@ -196,7 +196,7 @@ const NewEvent = (props) => {
              if (checkForConflictingAppointments(startTime, endTime, dailyAppointments)) {
                 console.log("Conflicts detected");
              } else {
-                 console.log("Make the appointment!");
+                 // No conflicts detected, proceed to create appointment
              }
             
             const appointmentData = JSON.stringify({

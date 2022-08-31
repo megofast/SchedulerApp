@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { getDailyAppointments, getMonthlyAppointments, getWeeklyAppointments } from '../Redux/AppointmentSlice';
 //import 'bootstrap/dist/css/bootstrap.min.css';
+import '../CSS/Layout.css';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 import moment from 'moment';
 import MiniCalendar from './MiniCalendar';
@@ -18,7 +19,7 @@ const Dashboard = (props) => {
         if (moment(appointment.startTime).isAfter()) {
             // Set the next appointment variable, this method only works if the daily appointments are sorted.
             temporaryNextAppoint = appointment;
-            console.log(temporaryNextAppoint);
+            //console.log(temporaryNextAppoint);
             break;
         }
     };
@@ -54,7 +55,7 @@ const Dashboard = (props) => {
                 if (moment(appointment.startTime).isAfter()) {
                     // Set the next appointment variable, this method only works if the daily appointments are sorted.
                     setNextAppointment(appointment);
-                    console.log(appointment);
+                    //console.log(appointment);
                     foundNext = true;
                     break;
                 }
@@ -65,7 +66,7 @@ const Dashboard = (props) => {
             }
         }
         let clockID = 0;
-        clockID = setInterval(updateCurrentTime, 6000);
+        clockID = setInterval(updateCurrentTime, 60000);
 
         // Create a return function to destroy the interval once the component unmounts
         return () => {
@@ -151,8 +152,8 @@ const Dashboard = (props) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col className="m-2">
-                            <Card className="border shadow">
+                        <Col className="m-3 p-0">
+                            <Card className="border shadow h-100">
                                 <Card.Header as="h6"><div className="text-xs font-weight-bold text-uppercase mb-1">
                                             Today's Appointments</div></Card.Header>
                                 <Card.Body>
@@ -181,12 +182,12 @@ const Dashboard = (props) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col className="m-2">
+                        <Col className="m-3 p-0">
                             <MiniCalendar appointments={ monthAppointments } today={ today } />
                         </Col>
                     </Row>
                     <Row>
-                        <Col className="m-2">
+                        <Col className="m-3 p-0">
                             <MiniWeeklySummary appointments={ weeklyAppointments }/>
                         </Col>
                     </Row>

@@ -2,7 +2,7 @@ import React from 'react';
 import { ListGroup, ListGroupItem, Row, Col, Form } from 'react-bootstrap';
 
 const SecuritySettings = (props) => {
-
+    
     return (
         <>
             <h5>Notification Settings</h5>
@@ -15,7 +15,7 @@ const SecuritySettings = (props) => {
                         </Col>
                         <Col sm={2} className="d-flex align-items-center justify-content-end mx-auto">
                             <Form>
-                                <Form.Select>
+                                <Form.Select defaultValue={props.notifyDuration} onChange={props.updateNotifyDuration}>
                                     <option value="15">15 Min</option>
                                     <option value="30">30 Min</option>
                                     <option value="45">45 Min</option>
@@ -32,7 +32,7 @@ const SecuritySettings = (props) => {
                             <p className="fs-6">Determines whether a popup will appear on screen reminding of an upcoming appointment.</p>
                         </Col>
                         <Col sm={2} className="d-flex align-items-center justify-content-end">
-                                <Form.Check type="switch" id="notificationPopupSwitch" />
+                                <Form.Check type="switch" id="notificationPopupSwitch" defaultChecked={props.notifyReminder} onChange={props.updateNotifyReminder}/>
                         </Col>
                     </Row>
                 </ListGroupItem>

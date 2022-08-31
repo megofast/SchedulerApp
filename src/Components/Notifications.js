@@ -1,23 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { Modal } from 'react-bootstrap';
+import React from 'react';
+import { Modal, Row, Col, ListGroup, ListGroupItem } from 'react-bootstrap';
 import moment from 'moment';
-import { getDailyAppointments } from '../Redux/AppointmentSlice';
-import { current } from '@reduxjs/toolkit';
 
 const Notifications = (props) => {
-    const {dailyAppointments} = useSelector( (state) => state.appointmentReducer);
-    const dispatch = useDispatch();
-    let currentTime = moment();
-    /*
-    useEffect( () => {
-        // Refresh the dailyAppointments list for the current day
-        let parameters = {
-            date: currentTime.format('YYYY-MM-DD'),
-        }
-        dispatch(getDailyAppointments(parameters));
-    }, [currentTime, dailyAppointments]);
-    */
+    
+    
     return (
         <>
         <Modal show={props.notificationModalOpen} onHide={props.handleNotificationModalEvent}>
@@ -25,7 +12,24 @@ const Notifications = (props) => {
                <Modal.Title>Notifications</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                Hello World!!!
+                <ListGroup>
+                {
+                    props.notifyApps.map( (appointment, i) => {
+                        return (
+                        <ListGroupItem key={i}>
+                            <Row>
+                                <Col sm={7}>
+                                    <strong className="fs-6">{appointment.app.title}</strong>
+                                    <p className="fs-6">With client {appointment.app.clientID}</p>
+                                </Col>
+                                <Col sm={5} className="d-flex align-items-center justify-content-end mx-auto">
+                                <p className="fs-6">{moment(appointment.app.startTime).format('hh:mm a')} --- {moment(appointment.app.endTime).format('hh:mm a')}</p>
+                                </Col>
+                            </Row>
+                        </ListGroupItem>
+                    )})
+                }
+                </ListGroup>
             </Modal.Body>
         </Modal>
         </>

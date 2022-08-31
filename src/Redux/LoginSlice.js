@@ -52,14 +52,23 @@ const LoginSlice = createSlice({
             lastName: null,
             phone: null,
             email: null,
-            username: null
+            username: null,
+            settings: null,
         },
-        employeeSettings: null,
     },
     reducers: {
         logout: (state, action) => {
             state.token = "";
-            state.employee = [];
+            state.refreshToken = "";
+            state.viewingEmployeeID = null;
+            state.loggedInEmployeeID = null;
+            state.tokenPayload = "";
+            state.employee.employeeID = null;
+            state.employee.firstName = null;
+            state.employee.lastName = null;
+            state.employee.phone = null;
+            state.employee.email = null;
+            state.employee.username = null;
             state.viewingEmployeeID = null;
             state.loggedInEmployeeID = null;
             state.isAuthenticated = false;
@@ -117,6 +126,12 @@ const LoginSlice = createSlice({
             state.employee.phone = action.payload[0].phone;
             state.employee.email = action.payload[0].email;
             state.employee.username = action.payload[0].username;
+            // Check if the user has stored settings, if there are none assign defaults
+            if (action.payload[0].userSettings === null || action.payload[0].userSettings === "") {
+                state.employee.settings = "30|true"
+            } else {
+                state.employee.settings = action.payload[0].userSettings;
+            }
         },
         [getCurrentEmployeeInfo.rejected]: (state, action) => {
             state.loading = false;
